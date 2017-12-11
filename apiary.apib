@@ -1,0 +1,269 @@
+FORMAT: 1A
+HOST: http://localhost:8080/
+
+# agenda
+
+由于一个ur对应一个二级标题，只能出此下策 <br>
+PS：前面的api最后用localhost:8080代替！
+
+# Group 用户
+
+## users [/v1/users]
+
+### 显示所有用户 [GET]
+
++ Response 200 (application/json)
+
+        {
+          "hza": {
+            "Name":"hza",
+            "Email":"123@qq.com",
+            "Phone":"567"
+          },
+          "hpz": {
+            "Name":"hpz",
+            "Email":"789@qq.com",
+            "Phone":"333"
+          },
+          "kyj": {
+            "Name":"kyj",
+            "Email":"222@qq.com",
+            "Phone":"444"
+          }
+        }
+
+### 创建用户 [POST]
+
++ request (application/json)
+
+        {
+          "Name":"hza",
+          "Password":"123321",
+          "Email":"123@qq.com",
+          "Phone":"567"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": ""
+        }
+
+## user [/v1/users/{id}]
+
+### 删除用户 [DELETE]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": ""
+        }
+
+## user [/v1/user/login/{?name,password}]
+
+### 用户登录 [GET]
+
++ Parameters
+    + name (string)
+
+        用户登录的用户名字。
+
+        + Default: hza
+        
+    + password (string)
+    
+        用户登录对应的密码。
+        
+        + Default: 123321
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+          "id":"1",
+          "Name":"hza",
+          "HashPassword":"xxxxxxxxxx",
+          "Email":"123@qq.com",
+          "Phone":"567"
+        }
+
+## user [/v1/user/logout]
+
+### 用户登出 [GET]
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": ""
+        }
+
+# Group 会议
+
+以下部分老侯补充，主要补充undefined！！！！！！！！！！！！
+
+## users [/v1/users/{id}/create-meeting]
+
+### 创建新的会议 [POST]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
++ request (application/json)
+
+        {
+          "undefined"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "undefined"
+        }
+
+## users [/v1/users/{id}/all-meetings]
+
+### 显示所有会议 [GET]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
++ Response 200 (application/json)
+
+        {
+          "undefined"
+        }
+        
+## users [/v1/users/{id}/quit-meeting/{title}]
+
+### 退出指定会议 [DELETE]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
+    + title (string)
+
+        会议名称。
+
+        + Default: sbhza
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+        }
+       
+## users [/v1/users/{id}/cancel-meeting/{title}]
+
+### 取消指定会议 [DELETE]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
+    + title (string)
+
+        会议名称。
+
+        + Default: sbhza
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+        }
+        
+## users [/v1/users/{id}/cancel-all-meeting]
+
+### 取消所有会议 [DELETE]
+
++ Parameters
+    + id (string)
+
+        用户ID。
+
+        + Default: 1
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+        }
+      
+## meetings [/v1/meeting/{title}/add-participators]
+
+### 会议添加参与者 [PUT]
+
++ Parameters
+
+    + title (string)
+
+        会议名称。
+
+        + Default: sbhza
+
++ request (application/json)
+
+        {
+          "undefined"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+        }
+
+## meetings [/v1/meeting/{title}/delete-participators]
+
+### 会议删除参与者 [PUT]
+
++ Parameters
+
+    + title (string)
+
+        会议名称。
+
+        + Default: sbhza
+
++ request (application/json)
+
+        {
+          "undefined"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "success": "true",
+          "result": "" 
+        }
