@@ -1,21 +1,28 @@
-// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package main
 
-import "github.com/tpisntgod/Agenda/cmd"
+import (
+	"os"
+
+	flag "github.com/spf13/pflag"
+	"github.com/tpisntgod/Agenda/service/server"
+)
+
+const (
+	PORT string = "8080"
+)
 
 func main() {
-	cmd.Execute()
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = PORT
+	}
+
+	pPort := flag.StringP("port", "p", PORT, "PORT for httpd listening")
+	flag.Parse()
+	if len(*pPort) != 0 {
+		port = *pPort
+	}
+
+	ser := server.NewServer()
+	ser.Run(":" + port)
 }

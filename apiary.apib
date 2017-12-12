@@ -46,11 +46,26 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": ""
+          "Success": "true",
+          "Result": ""
         }
 
-## user [/v1/users/{id}]
+## user [/v1/user]
+
+### 显示当前用户 [GET]
+
++ Response 200 (application/json)
+
+        {
+          "Success": "true",
+          "Result": "",
+          "ID": "1",
+          "Name": "hza",
+          "Email":"123@qq.com",
+          "Phone":"567"
+        }
+
+## users [/v1/users/{id}]
 
 ### 删除用户 [DELETE]
 
@@ -64,8 +79,8 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": ""
+          "Success": "true",
+          "Result": ""
         }
 
 ## user [/v1/user/login/{?name,password}]
@@ -78,21 +93,20 @@ PS：前面的api最后用localhost:8080代替！
         用户登录的用户名字。
 
         + Default: hza
-        
+
     + password (string)
-    
+
         用户登录对应的密码。
-        
+
         + Default: 123321
 
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
-          "id":"1",
+          "Success": "true",
+          "Result": ""
+          "ID":"1",
           "Name":"hza",
-          "HashPassword":"xxxxxxxxxx",
           "Email":"123@qq.com",
           "Phone":"567"
         }
@@ -104,8 +118,8 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": ""
+          "Success": "true",
+          "Result": ""
         }
 
 # Group 会议
@@ -151,7 +165,7 @@ PS：前面的api最后用localhost:8080代替！
         {
           "undefined"
         }
-        
+
 ## users [/v1/users/{id}/quit-meeting/{title}]
 
 ### 退出指定会议 [DELETE]
@@ -172,10 +186,10 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
+          "Success": "true",
+          "Result": ""
         }
-       
+
 ## users [/v1/users/{id}/cancel-meeting/{title}]
 
 ### 取消指定会议 [DELETE]
@@ -196,10 +210,10 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
+          "Success": "true",
+          "Result": ""
         }
-        
+
 ## users [/v1/users/{id}/cancel-all-meeting]
 
 ### 取消所有会议 [DELETE]
@@ -214,10 +228,10 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
+          "Success": "true",
+          "Result": ""
         }
-      
+
 ## meetings [/v1/meeting/{title}/add-participators]
 
 ### 会议添加参与者 [PUT]
@@ -239,8 +253,8 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
+          "Success": "true",
+          "Result": ""
         }
 
 ## meetings [/v1/meeting/{title}/delete-participators]
@@ -264,6 +278,6 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "success": "true",
-          "result": "" 
+          "Success": "true",
+          "Result": ""
         }

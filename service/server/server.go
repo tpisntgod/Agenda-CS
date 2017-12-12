@@ -1,4 +1,4 @@
-package service
+package server
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-// 新建客户端
+// NewServer 新建客户端
 func NewServer() *negroni.Negroni {
 	formatter := render.New(render.Options{
 		IndentJSON: true,
@@ -23,11 +23,43 @@ func NewServer() *negroni.Negroni {
 	return n
 }
 
+// 初始化路由，分别初始化User部分和Meeting部分
 func initRoutes(mx *mux.Router, formatter *render.Render) {
-	mx.HandleFunc("/hello/{id}", testHandler(formatter)).Methods("GET")
-	mx.HandleFunc("/service/insert", postUserInfoHandler(formatter)).Methods("POST")
-	mx.HandleFunc("/service/find", getUserInfoHandler(formatter)).Methods("GET")
-	mx.HandleFunc("/service/delete", deleteUserInfoHandle(formatter)).Methods("GET")
+	initUserRoutes(mx, formatter)
+	initMeetingRoute(mx, formatter)
+}
+
+// 用户部分
+func initUserRoutes(mx *mux.Router, formatter *render.Render) {
+	// 显示当前用户
+	mx.HandleFunc("/v1/user", showCurrentUserHandle(formatter)).Methods("GET")
+	// 创建用户
+	mx.HandleFunc("/v1/users", undefinedHandler(formatter)).Methods("POST")
+	// 登录用户
+	mx.HandleFunc("/v1/user/login", undefinedHandler(formatter)).Methods("GET")
+	// 登出用户
+	mx.HandleFunc("/v1/user/logout", undefinedHandler(formatter)).Methods("GET")
+	// 显示所有用户
+	mx.HandleFunc("/v1/users", undefinedHandler(formatter)).Methods("GET")
+	// 删除用户
+	mx.HandleFunc("/v1/users", undefinedHandler(formatter)).Methods("DELETE")
+}
+
+func initMeetingRoute(mx *mux.Router, formatter *render.Render) {
+	// 显示所有会议
+	mx.HandleFunc("/v1/users/{id}/all-meetings", undefinedHandler(formatter)).Methods("GET")
+	// 退出会议
+	mx.HandleFunc("/v1/users/{id}/quit-meeting/{title} ", undefinedHandler(formatter)).Methods("DELETE")
+	// 取消会议
+	mx.HandleFunc("/v1/users/{id}/cancel-meeting/{title}", undefinedHandler(formatter)).Methods("DELETE")
+	// 取消所有会议
+	mx.HandleFunc("/v1/users/{id}/cancel-all-meeting", undefinedHandler(formatter)).Methods("DELETE")
+	// 会议创建参与者
+	mx.HandleFunc("/v1/meeting/{title}/add-participators", undefinedHandler(formatter)).Methods("PUT")
+	// 会议删除参与者
+	mx.HandleFunc("/v1/meeting/{title}/delete-participators", undefinedHandler(formatter)).Methods("DELETE")
+	// 显示用户参加的所有会议
+	mx.HandleFunc("/v1/meetings/{id}", undefinedHandler(formatter)).Methods("GET")
 }
 
 func testHandler(formatter *render.Render) http.HandlerFunc {
