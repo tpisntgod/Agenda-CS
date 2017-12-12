@@ -1,9 +1,9 @@
-# Agenda
+# Agenda-CS
 
 [![Build Status](https://travis-ci.org/tpisntgod/Agenda.svg?branch=master)](https://travis-ci.org/tpisntgod/Agenda)
 
 ## Team member
-- 胡子昂 15331111 
+- 胡子昂 15331111
 - 侯培中 15331105
 - 柯永基 15331135
 
@@ -14,7 +14,7 @@
 
 - 胡子昂
     1. 整体项目框架的初构建
-    2. entity/user包的实现 
+    2. entity/user包的实现
     3. log日志的实现
 - 侯培中
     1. 整体项目框架的改进  
@@ -22,8 +22,8 @@
     3. meeting的test实现  
     4. 使用travis进行项目持续集成
 - 柯永基
-  1. cobra项目的创建 
-  2. 逻辑层的实现 
+  1. cobra项目的创建
+  2. 逻辑层的实现
   3. 项目总管理
 
 ## 项目功能
@@ -80,7 +80,7 @@
 
   ```shell
   ~$ $GOPATH/bin/Agenda ap -h
-  to add some participators to a meeting with 
+  to add some participators to a meeting with
   	the title of the meeting and the name of the new participators.
   	 For example:
 
@@ -91,7 +91,7 @@
 
   Flags:
     -h, --help                help for ap
-    -p, --parti stringArray   name of the participators you want to add 
+    -p, --parti stringArray   name of the participators you want to add
     -t, --title string        title of the meeting
 
   Global Flags:
