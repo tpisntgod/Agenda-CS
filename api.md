@@ -1,5 +1,5 @@
 - [Post]   v1/users  -- 创建用户
-- [Get]   v1/user/login{?name,password}  -- 登录用户
+- [Post]   v1/user/login  -- 登录用户
 - [Get]   v1/user/logout  -- 登出用户
 - [Get]   v1/users -- 显示所有用户
 - [Delete]   v1/users/{id}  -- 删除用户  **？**

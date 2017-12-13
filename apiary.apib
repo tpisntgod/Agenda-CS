@@ -83,22 +83,16 @@ PS：前面的api最后用localhost:8080代替！
           "Result": ""
         }
 
-## user [/v1/user/login/{?name,password}]
+## user [/v1/user/login]
 
-### 用户登录 [GET]
+### 用户登录 [POST]
 
-+ Parameters
-    + name (string)
++ request (application/json)
 
-        用户登录的用户名字。
-
-        + Default: hza
-
-    + password (string)
-
-        用户登录对应的密码。
-
-        + Default: 123321
+        {
+          "Name":"hza",
+          "Password":"123321"
+        }
 
 + Response 200 (application/json)
 

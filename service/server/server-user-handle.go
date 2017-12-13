@@ -9,11 +9,27 @@ import (
 	"github.com/tpisntgod/Agenda/service/entity/user"
 )
 
-func toString(err *errors) string {
+// error.toString
+func toString(err error) string {
 	if err == nil {
 		return ""
 	}
 	return err.Error()
+}
+
+type B struct {
+	A string
+	B string
+}
+
+type Todo struct {
+	Success bool   `json:"Success"`
+	Result  string `json:Result`
+}
+
+// 标准Json，只包含Success和Result
+func stdJson(succ bool, res string) Todo {
+	return Todo{succ, res}
 }
 
 func initMydb(args []string) {
@@ -73,7 +89,7 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 		r.ParseForm()
 		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Passname"), r.FormValue("Email"), r.FormValue("Phone"))
 		succ := (bool)(err == nil)
-		res := err.Error()
+		res := toString(err)
 
 		formatter.JSON(w, http.StatusOK, struct {
 			Success bool
@@ -81,6 +97,49 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 		}{
 			succ,
 			res})
+	}
+}
+
+// 登录用户
+func loginUserHandle(formatter *render.Render) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"))
+		succ := (bool)(err == nil)
+		res := toString(err)
+
+		if succ {
+			formatter.JSON(w, http.StatusOK, struct {
+				Success bool
+				Result  string
+				ID      int
+				Name    string
+				Email   string
+				Phone   string
+			}{
+				succ,
+				res,
+				user.CurrentUser.ID,
+				user.CurrentUser.Name,
+				user.CurrentUser.Email,
+				user.CurrentUser.PhoneNumber})
+		} else {
+			formatter.JSON(w, http.StatusOK, struct {
+				Success bool
+				Result  string
+			}{
+				succ,
+				res})
+		}
+	}
+}
+
+// 登出用户
+func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := user.LogoutUser()
+		succ := (bool)(err == nil)
+		res := toString(err)
 	}
 }
 
