@@ -1,256 +1,235 @@
 FORMAT: 1A
-HOST: http://localhost:8080/
+HOST: http://agendacs.apiblueprint.org/
 
-# agenda
+# Agenda
 
 由于一个ur对应一个二级标题，只能出此下策 <br>
 PS：前面的api最后用localhost:8080代替！
 
-# Group 用户
+# Group Users
 
-## users [/v1/users]
+Resources related to users in the API.
 
-### 显示所有用户 [GET]
+## User Collection [/v1/users]
 
-+ Response 200 (application/json)
-
-        {
-          "Items": [
-            {
-              "Name":"hza",
-              "Email":"123@qq.com",
-              "Phone":"567"
-            },
-            {
-              "Name":"hpz",
-              "Email":"789@qq.com",
-              "Phone":"333"
-            },
-            {
-              "Name":"kyj",
-              "Email":"222@qq.com",
-              "Phone":"444"
-            }
-          ],
-          "Success": true,
-          "Result": ""
-        }
-
-### 创建用户 [POST]
-
-+ request (application/json)
-
-        {
-          "Name":"hza",
-          "Password":"123321",
-          "Email":"123@qq.com",
-          "Phone":"567"
-        }
+### List All Users [GET]
 
 + Response 200 (application/json)
 
         {
-          "Success": "true",
-          "Result": ""
+            "Items": [
+                {
+                    "Name":"hza",
+                    "Email":"123@qq.com",
+                    "Phone":"567"
+                },
+                {
+                    "Name":"hpz",
+                    "Email":"789@qq.com",
+                    "Phone":"333"
+                },
+                {
+                    "Name":"kyj",
+                    "Email":"222@qq.com",
+                    "Phone":"444"
+                }
+            ],
+            "Information": ""
         }
 
-### 删除用户 [DELETE]
+### Register User [POST]
+
++ Name (string) - The name of the user.
++ Password (string) - The password of the account.
++ Email (string) - The email of the user.
++ Phone (string) - The phone number of the user.
+
++ Request (application/json)
+
+        {
+            "Name":"hza",
+            "Password":"123321",
+            "Email":"123@qq.com",
+            "Phone":"567"
+        }
+
++ Response 201 (application/json)
+    
+        {
+            "Information": ""
+        }
+
+### Delete User [DELETE]
+
++ Response 204
+
+## User State [/v1/user/login]
+
+### User Login [POST]
+
++ Name (string) - The name of the user.
++ Password (string) - The password of the account.
+
++ Request (application/json)
+
+        {
+            "Name":"hza",
+            "Password":"123321"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "Information": "",
+            "Name":"hza",
+            "Email":"123@qq.com",
+            "Phone":"567"
+        }
+
+## User State Reset [/v1/user/logout]
+
+### User Logout [GET]
 
 + Response 200 (application/json)
 
         {
-          "Success": "true",
-          "Result": ""
+            "Information": ""
         }
 
-## user [/v1/user/login]
+# Group Meetings
 
-### 用户登录 [POST]
-
-+ request (application/json)
-
-        {
-          "Name":"hza",
-          "Password":"123321"
-        }
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": "",
-          "Name":"hza",
-          "Email":"123@qq.com",
-          "Phone":"567"
-        }
-
-## user [/v1/user/logout]
-
-### 用户登出 [GET]
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": ""
-        }
-
-# Group 会议
-
+Resources related to meetings in the API.
 以下部分老侯补充，主要补充undefined！！！！！！！！！！！！
 
-## users [/v1/users/{id}/create-meeting]
+## Meeting Collection [/v1/meetings]
 
-### 创建新的会议 [POST]
+### Create New Meeting [POST]
+
++ Title (string) - The title of the meeting.
++ Host (string) - The host of the account.
++ Participator (array[string]) - The participators of the meeting.
++ StartTime (string) - The start time of the meeting.
++ EndTime (string) - The end time of the meeting.
+
++ Request (application/json)
+
+        {
+            "Title":"agenda-cs",
+            "Host":"pml",
+            "Participator": [
+                    "hza",
+                    "hpz",
+                    "kyj"
+            ],
+            "StartTime":"2017-10-28 09:30:00",
+            "EndTime":"2017-10-28 10:30:00"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "Information": ""
+        }
+
+
+## Meeting Participators Addition [/v1/meeting/{title}/adding-participators]
 
 + Parameters
-    + id (string)
+    + title:"default" (required, string) - Title of the Meeting in the form of an string
 
-        用户ID。
-
-        + Default: 1
+### Add Meeting Participators [PATCH]
 
 + request (application/json)
 
         {
-          "undefined"
+            "Participator": [
+                    "hza",
+                    "hpz",
+                    "kyj"
+            ]
         }
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
 
         {
-          "undefined"
+            "Information": ""
         }
 
-## users [/v1/users/{id}/all-meetings]
 
-### 显示所有会议 [GET]
-
-+ Parameters
-    + id (string)
-
-        用户ID。
-
-        + Default: 1
-
-+ Response 200 (application/json)
-
-        {
-          "undefined"
-        }
-
-## users [/v1/users/{id}/quit-meeting/{title}]
-
-### 退出指定会议 [DELETE]
+## Meeting Participators Deletion [/v1/meeting/{title}/deleting-participators]
 
 + Parameters
-    + id (string)
+    + title:"default" (required, string) - Title of the Meeting in the form of an string
 
-        用户ID。
-
-        + Default: 1
-
-    + title (string)
-
-        会议名称。
-
-        + Default: sbhza
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": ""
-        }
-
-## users [/v1/users/{id}/cancel-meeting/{title}]
-
-### 取消指定会议 [DELETE]
-
-+ Parameters
-    + id (string)
-
-        用户ID。
-
-        + Default: 1
-
-    + title (string)
-
-        会议名称。
-
-        + Default: sbhza
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": ""
-        }
-
-## users [/v1/users/{id}/cancel-all-meeting]
-
-### 取消所有会议 [DELETE]
-
-+ Parameters
-    + id (string)
-
-        用户ID。
-
-        + Default: 1
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": ""
-        }
-
-## meetings [/v1/meeting/{title}/add-participators]
-
-### 会议添加参与者 [PUT]
-
-+ Parameters
-
-    + title (string)
-
-        会议名称。
-
-        + Default: sbhza
+### Delete Meeting Participators [PATCH]
 
 + request (application/json)
 
         {
-          "undefined"
+            "Participator": [
+                    "hza",
+                    "hpz",
+                    "kyj"
+            ]
         }
+
++ Response 201 (application/json)
+
+        {
+          "Information": ""
+        }
+
+
+## Query [/v1/users/query-meeting{?starttime,endtime}]
+
++ Parameters
+    + starttime:"2017-10-28 09:30:00" (required, string) - Start time of Query range
+    + endtime:"2017-10-28 10:30:00" (required, string) - End time of Query range
+
+### Query Meetings [GET]
 
 + Response 200 (application/json)
 
         {
-          "Success": "true",
-          "Result": ""
+            "Title":"agenda-cs",
+            "StartTime":"2017-10-28 09:30:00",
+            "EndTime":"2017-10-28 10:30:00",
+            "Host":"pml",
+            "Participator": [
+                    "hza",
+                    "hpz",
+                    "kyj"
+            ]
         }
 
-## meetings [/v1/meeting/{title}/delete-participators]
-
-### 会议删除参与者 [PUT]
+## Cancel [/v1/users/cancel-a-meeting/{title}]
 
 + Parameters
+    + title:"default" (required, string) - Title of the Meeting in the form of an string
 
-    + title (string)
+### Cancel a Meeting [DELETE]
 
-        会议名称。
++ Response 204
 
-        + Default: sbhza
+## Quitting [/v1/users/quit-meeting/{title}]
+
+### Quit a Meeting [PATCH]
 
 + request (application/json)
 
         {
-          "undefined"
+            "Title":"agenda-cs"
         }
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
 
         {
-          "Success": "true",
-          "Result": ""
+          "Information": ""
         }
+
+
+## Emptying [/v1/users/cancel-all-meeting]
+
+### Clear a User's All Meetings [DELETE]
+
++ Response 204
