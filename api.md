@@ -4,11 +4,11 @@
 - [Get]   v1/users -- 显示所有用户
 - [Delete]   v1/users  -- 删除用户
 
-- [Get]   v1/users/all-meetings   -- 显示所有会议
+- [Get]   v1/meetings/searching-meeting   -- 查询会议
 - [Patch]   v1/users/quit-meeting/{title}   -- 退出会议
 - [Delete]   v1/users/cancel-a-meeting/{title}   -- 取消会议
 - [Delete]   v1/users/cancel-all-meeting   -- 取消所有会议
-- [Get]   v1/meetings  -- 显示用户所有会议
+- [Get]   v1/meetings  -- 显示用户所有会议 
 - [Patch]   v1/meeting/{title}/adding-participators   -- 会议添加参与者
 - [Patch]   v1/meeting/{title}/deleting-participators   -- 会议删除参与者
 - [Post]   v1/meetings --创建会议
