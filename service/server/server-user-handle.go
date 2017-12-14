@@ -1,13 +1,30 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/unrolled/render"
 
 	"github.com/tpisntgod/Agenda/service/entity/user"
 )
+
+// 用于返回的模板Json
+type resj struct {
+	// 包含userItem属性
+	user.Item
+	// 返回user查询列表
+	Items []user.Item
+	// 结果是否成功
+	Success bool
+	// 表示结果
+	Result string
+}
+
+// 通过user中的函数，更新CurrentUser
+func updateCurrentUser(r *http.Request) {
+	cookie, err := r.Cookie("Name")
+	user.SetCurrentUser(cookie.Value, err)
+}
 
 // error.toString
 func toString(err error) string {
@@ -17,19 +34,11 @@ func toString(err error) string {
 	return err.Error()
 }
 
-type B struct {
-	A string
-	B string
-}
-
-type Todo struct {
-	Success bool   `json:"Success"`
-	Result  string `json:Result`
-}
-
-// 标准Json，只包含Success和Result
-func stdJson(succ bool, res string) Todo {
-	return Todo{succ, res}
+// 标准response JSON，只包含Success和Result
+func stdResj(succ bool, res string) resj {
+	return resj{
+		Success: succ,
+		Result:  res}
 }
 
 func initMydb(args []string) {
@@ -58,28 +67,14 @@ func initMydb(args []string) {
 }
 
 // 显示CurrentUser的id和name
-func showCurrentUserHandle(formatter *render.Render) http.HandlerFunc {
-	fmt.Println("Enter?")
+func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if user.IsLogin() {
-			// 在登录状态
-			formatter.JSON(w, http.StatusOK, struct {
-				Success bool
-				Name    string
-				ID      int
-			}{
-				true,
-				user.CurrentUser.Name,
-				user.CurrentUser.ID})
-		} else {
-			// 不在登录状态
-			formatter.JSON(w, http.StatusOK, struct {
-				Success bool
-				Result  string
-			}{
-				false,
-				"ERROR: no logined user!"})
-		}
+		resjson := resj{}
+		//resjson.Items = append(resjson.Items, user.Item{"1", "2", "3", "4"})
+		resjson.Name = "123"
+		resjson.Success = true
+		resjson.Result = "trytry"
+		formatter.JSON(w, http.StatusOK, resjson)
 	}
 }
 
@@ -103,33 +98,20 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登录用户
 func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 使用user函数
+		updateCurrentUser(r)
 		r.ParseForm()
 		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"))
 		succ := (bool)(err == nil)
 		res := toString(err)
 
+		// 返回报文
 		if succ {
-			formatter.JSON(w, http.StatusOK, struct {
-				Success bool
-				Result  string
-				ID      int
-				Name    string
-				Email   string
-				Phone   string
-			}{
-				succ,
-				res,
-				user.CurrentUser.ID,
-				user.CurrentUser.Name,
-				user.CurrentUser.Email,
-				user.CurrentUser.PhoneNumber})
+			resjson := stdResj(succ, res)
+			resjson.Item = *user.CurrentUser
+			formatter.JSON(w, http.StatusOK, resjson)
 		} else {
-			formatter.JSON(w, http.StatusOK, struct {
-				Success bool
-				Result  string
-			}{
-				succ,
-				res})
+			formatter.JSON(w, http.StatusOK, stdResj(succ, res))
 		}
 	}
 }
@@ -137,9 +119,13 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 使用user函数
+		updateCurrentUser(r)
+		r.ParseForm()
 		err := user.LogoutUser()
 		succ := (bool)(err == nil)
 		res := toString(err)
+		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
 	}
 }
 

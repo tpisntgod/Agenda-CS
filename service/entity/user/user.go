@@ -13,14 +13,13 @@ import (
 	"github.com/tpisntgod/Agenda/service/entity/mylog"
 )
 
-var userItemsFilePath string = "src/github.com/tpisntgod/Agenda/service/orm/UserItems.json"
-var currentUserFilePath string = "src/github.com/tpisntgod/Agenda/service/orm/Current.txt"
+var userItemsFilePath = "src/github.com/tpisntgod/Agenda/service/orm/UserItems.json"
+var currentUserFilePath = "src/github.com/tpisntgod/Agenda/service/orm/Current.txt"
 
-type userItem struct {
-	// 用户id
-	ID int `xorm:"pk autoincr"`
+// Item 用户信息
+type Item struct {
 	// 用户名字
-	Name string
+	Name string `xorm:"pk"`
 	// hash过的密码
 	HashPassword string
 	// 注册用的邮箱
@@ -33,15 +32,37 @@ func init() {
 	// 初始化
 	userItemsFilePath = filepath.Join(*mylog.GetGOPATH(), userItemsFilePath)
 	currentUserFilePath = filepath.Join(*mylog.GetGOPATH(), currentUserFilePath)
-	userItems = make(map[string](userItem))
+	userItems = make(map[string](Item))
 	CurrentUser = nil
 	readJSON()
 }
 
-// 新建一个userItem，并返回指针
+// SetCurrentUser 新加入的函数，通过cookie字段，更新CurrentUser
+func SetCurrentUser(name string, err error) {
+	// cookie为空
+	if err != nil {
+		CurrentUser = nil
+		return
+	}
+
+	// CurrentUser未改变
+	if CurrentUser != nil && CurrentUser.Name == name {
+		return
+	}
+
+	// CurrentUser改变，则更新
+	tempUser, ok := userItems[name]
+	if !ok {
+		CurrentUser = nil
+	} else {
+		CurrentUser = &tempUser
+	}
+}
+
+// 新建一个Item，并返回指针
 func newUser(name string, password string,
-	email string, phoneNumber string) *userItem {
-	newItem := new(userItem)
+	email string, phoneNumber string) *Item {
+	newItem := new(Item)
 	newItem.Name = name
 	newItem.HashPassword = hashFunc(password)
 	newItem.Email = email
@@ -59,10 +80,10 @@ func hashFunc(hashString string) string {
 }
 
 // 储存user的map集合
-var userItems map[string](userItem)
+var userItems map[string](Item)
 
 // CurrentUser : currentUser是当前User，如果没有登录为nil
-var CurrentUser *userItem
+var CurrentUser *Item
 
 // IsLogin : 判断当前有没有用户登录，并不是很必要
 func IsLogin() bool {
@@ -192,7 +213,7 @@ func readJSON() {
 	// 解析CurrentUser
 	b2, err2 := ioutil.ReadFile(currentUserFilePath)
 	if err2 == nil {
-		CurrentUser = new(userItem)
+		CurrentUser = new(Item)
 		json.Unmarshal(b2, CurrentUser)
 	}
 }
@@ -226,6 +247,6 @@ func writeJSON() {
 }
 
 // to string
-func (u userItem) String() string {
+func (u Item) String() string {
 	return "{Name:" + u.Name + "  Email:" + u.Email + "  Phone:" + u.PhoneNumber + "}"
 }

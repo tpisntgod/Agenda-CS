@@ -31,8 +31,8 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 
 // 用户部分
 func initUserRoutes(mx *mux.Router, formatter *render.Render) {
-	// 显示当前用户
-	mx.HandleFunc("/v1/user", showCurrentUserHandle(formatter)).Methods("GET")
+	// 测试url
+	mx.HandleFunc("/v1/test", test(formatter)).Methods("GET")
 	// 创建用户
 	mx.HandleFunc("/v1/users", createUserHandle(formatter)).Methods("POST")
 	// 登录用户
