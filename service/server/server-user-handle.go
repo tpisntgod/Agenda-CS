@@ -70,7 +70,7 @@ func initMydb(args []string) {
 func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resjson := resj{}
-		//resjson.Items = append(resjson.Items, user.Item{"1", "2", "3", "4"})
+		resjson.Items = append(resjson.Items, user.Item{"1", "2", "3", "4"})
 		resjson.Name = "123"
 		resjson.Success = true
 		resjson.Result = "trytry"

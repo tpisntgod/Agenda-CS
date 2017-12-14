@@ -15,21 +15,25 @@ PS：前面的api最后用localhost:8080代替！
 + Response 200 (application/json)
 
         {
-          "hza": {
-            "Name":"hza",
-            "Email":"123@qq.com",
-            "Phone":"567"
-          },
-          "hpz": {
-            "Name":"hpz",
-            "Email":"789@qq.com",
-            "Phone":"333"
-          },
-          "kyj": {
-            "Name":"kyj",
-            "Email":"222@qq.com",
-            "Phone":"444"
-          }
+          "Items": [
+            {
+              "Name":"hza",
+              "Email":"123@qq.com",
+              "Phone":"567"
+            },
+            {
+              "Name":"hpz",
+              "Email":"789@qq.com",
+              "Phone":"333"
+            },
+            {
+              "Name":"kyj",
+              "Email":"222@qq.com",
+              "Phone":"444"
+            }
+          ],
+          "Success": true,
+          "Result": ""
         }
 
 ### 创建用户 [POST]
@@ -50,31 +54,7 @@ PS：前面的api最后用localhost:8080代替！
           "Result": ""
         }
 
-## user [/v1/user]
-
-### 显示当前用户 [GET]
-
-+ Response 200 (application/json)
-
-        {
-          "Success": "true",
-          "Result": "",
-          "ID": "1",
-          "Name": "hza",
-          "Email":"123@qq.com",
-          "Phone":"567"
-        }
-
-## users [/v1/users/{id}]
-
 ### 删除用户 [DELETE]
-
-+ Parameters
-    + id (string)
-
-        用户ID。
-
-        + Default: 1
 
 + Response 200 (application/json)
 
@@ -98,8 +78,7 @@ PS：前面的api最后用localhost:8080代替！
 
         {
           "Success": "true",
-          "Result": ""
-          "ID":"1",
+          "Result": "",
           "Name":"hza",
           "Email":"123@qq.com",
           "Phone":"567"
