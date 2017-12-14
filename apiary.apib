@@ -16,7 +16,7 @@ Resources related to users in the API.
 + Response 200 (application/json)
 
         {
-            "Items": [
+            "Users": [
                 {
                     "Name":"hza",
                     "Email":"123@qq.com",
@@ -190,15 +190,31 @@ Resources related to meetings in the API.
 + Response 200 (application/json)
 
         {
-            "Title":"agenda-cs",
-            "StartTime":"2017-10-28 09:30:00",
-            "EndTime":"2017-10-28 10:30:00",
-            "Host":"pml",
-            "Participator": [
-                    "hza",
-                    "hpz",
-                    "kyj"
-            ]
+            "Meetings": [
+                {
+                    "Title":"agenda-cs",
+                    "StartTime":"2017-10-28 09:30:00",
+                    "EndTime":"2017-10-28 10:30:00",
+                    "Host":"pml",
+                    "Participator": [
+                            "hza",
+                            "hpz",
+                            "kyj"
+                    ]
+                },
+                {
+                    "Title":"agenda-cs-second",
+                    "StartTime":"2017-10-29 09:30:00",
+                    "EndTime":"2017-10-29 10:30:00",
+                    "Host":"pml",
+                    "Participator": [
+                            "hza",
+                            "hpz",
+                            "kyj"
+                    ]
+                }
+            ],
+            "Information": ""
         }
 
 ## Cancel [/v1/users/cancel-a-meeting/{title}]
