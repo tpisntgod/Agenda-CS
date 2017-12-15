@@ -1,3 +1,5 @@
+// 本层不涉及逻辑判断，逻辑判断在user.go部分
+
 package server
 
 import (
@@ -19,13 +21,13 @@ type resj struct {
 	Information string
 }
 
-// 通过user中的函数，更新CurrentUser
-func updateCurrentUser(r *http.Request) {
+// 返回cookie中携带的Name字段
+func getCurrentUserName(r *http.Request) string {
 	cookie, err := r.Cookie("Name")
 	if cookie != nil {
-		user.SetCurrentUser(cookie.Value, err)
+		return cookie.Value
 	} else {
-		user.SetCurrentUser("", err)
+		return ""
 	}
 }
 
@@ -84,7 +86,7 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		updateCurrentUser(r)
+		name := getCurrentUserName(r)
 		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Password"), r.
 			FormValue("Email"), r.FormValue("Phone"))
 		//succ := (bool)(err == nil)
@@ -97,9 +99,9 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// 使用user函数
-		updateCurrentUser(r)
+		name := getCurrentUserName(r)
 		r.ParseForm()
-		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"))
+		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"), name)
 		succ := (bool)(err == nil)
 		res := toString(err)
 
@@ -125,8 +127,8 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		updateCurrentUser(r)
-		err := user.LogoutUser()
+		name := getCurrentUserName(r)
+		err := user.LogoutUser(name)
 		//succ := (bool)(err == nil)
 		res := toString(err)
 		formatter.JSON(w, http.StatusOK, stdResj(res))
@@ -136,7 +138,7 @@ func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 // 显示所有用户
 func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		updateCurrentUser(r)
+		getCurrentUserName(r)
 		fmt.Println(r.Cookies())
 		items, err := user.ListUsers()
 		//succ := (bool)(err == nil)
@@ -154,7 +156,7 @@ func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 // 删除已登录用户
 func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		updateCurrentUser(r)
+		getCurrentUserName(r)
 		err := user.DeleteUser()
 		//succ := (bool)(err == nil)
 		res := toString(err)
