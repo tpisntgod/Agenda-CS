@@ -6,7 +6,7 @@ import (
 
 	"github.com/unrolled/render"
 
-	"github.com/tpisntgod/Agenda/service/entity/user"
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/user"
 )
 
 // 用于返回的模板Json

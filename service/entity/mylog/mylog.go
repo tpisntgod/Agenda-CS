@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var logDivPath = "src/github.com/tpisntgod/Agenda/service/log"
+var logDivPath = "src/github.com/bilibiliChangKai/Agenda-CS/service/log"
 var logFilePath = "/" + time.Now().Format("2006-01-02") + ".txt"
 
 func init() {
@@ -26,7 +26,7 @@ func GetGOPATH() *string {
 	}
 	goPath := strings.Split(os.Getenv("GOPATH"), sp)
 	for _, v := range goPath {
-		if _, err := os.Stat(filepath.Join(v, "/src/github.com/tpisntgod/Agenda/service/entity/meeting/meeting.go")); !os.IsNotExist(err) {
+		if _, err := os.Stat(filepath.Join(v, "/src/github.com/bilibiliChangKai/Agenda-CS/service/entity/meeting/meeting.go")); !os.IsNotExist(err) {
 			return &v
 		}
 	}

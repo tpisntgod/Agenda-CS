@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/tpisntgod/Agenda/service/entity/mylog"
-	"github.com/tpisntgod/Agenda/service/entity/user"
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/user"
 )
 
 type meeting_records struct {
@@ -24,7 +24,7 @@ type meeting_records struct {
 var meetings []meeting_records
 var curUser string
 var isFileExist = true
-var writeFilePath = "src/github.com/tpisntgod/Agenda/service/json/MeetingInfo.json"
+var writeFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/service/json/MeetingInfo.json"
 
 //只是判断两个时间段是否overlap
 func checkIfMeetingTimeOverlap(meetingStartTime, meetingEndTime, startTime, endTime time.Time) bool {

@@ -10,11 +10,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tpisntgod/Agenda/service/entity/mylog"
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
 )
 
-var userItemsFilePath = "src/github.com/tpisntgod/Agenda/service/orm/UserItems.json"
-var currentUserFilePath = "src/github.com/tpisntgod/Agenda/service/orm/Current.txt"
+var userItemsFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/service/orm/UserItems.json"
+var currentUserFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/service/orm/Current.txt"
 
 // Item 用户信息
 type Item struct {

@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
+	"github.com/bilibiliChangKai/Agenda-CS/service/server"
 	flag "github.com/spf13/pflag"
-	"github.com/tpisntgod/Agenda/service/server"
 )
 
 const (
