@@ -23,12 +23,11 @@ type resj struct {
 
 // 返回cookie中携带的Name字段
 func getCurrentUserName(r *http.Request) string {
-	cookie, err := r.Cookie("Name")
+	cookie, _ := r.Cookie("Name")
 	if cookie != nil {
 		return cookie.Value
-	} else {
-		return ""
 	}
+	return ""
 }
 
 // error.toString
