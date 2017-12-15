@@ -86,7 +86,6 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		name := getCurrentUserName(r)
 		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Password"), r.
 			FormValue("Email"), r.FormValue("Phone"))
 		//succ := (bool)(err == nil)
@@ -99,9 +98,9 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// 使用user函数
-		name := getCurrentUserName(r)
+		loginname := getCurrentUserName(r)
 		r.ParseForm()
-		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"), name)
+		pitem, err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"), loginname)
 		succ := (bool)(err == nil)
 		res := toString(err)
 
@@ -110,13 +109,13 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 			// 如果成功登录，设置cookie
 			cookie := http.Cookie{
 				Name:   "Name",
-				Value:  user.CurrentUser.Name,
+				Value:  pitem.Name,
 				Path:   "/",
 				MaxAge: 1200}
 			http.SetCookie(w, &cookie)
 
 			resjson := stdResj(res)
-			resjson.Item = *user.CurrentUser
+			resjson.Item = *pitem
 			formatter.JSON(w, http.StatusOK, resjson)
 		} else {
 			formatter.JSON(w, http.StatusOK, stdResj(res))
@@ -127,8 +126,8 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		name := getCurrentUserName(r)
-		err := user.LogoutUser(name)
+		loginname := getCurrentUserName(r)
+		err := user.LogoutUser(loginname)
 		//succ := (bool)(err == nil)
 		res := toString(err)
 		formatter.JSON(w, http.StatusOK, stdResj(res))
@@ -138,9 +137,9 @@ func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 // 显示所有用户
 func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		getCurrentUserName(r)
+		loginname := getCurrentUserName(r)
 		fmt.Println(r.Cookies())
-		items, err := user.ListUsers()
+		items, err := user.ListUsers(loginname)
 		//succ := (bool)(err == nil)
 		res := toString(err)
 		if items == nil {
@@ -156,8 +155,8 @@ func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 // 删除已登录用户
 func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		getCurrentUserName(r)
-		err := user.DeleteUser()
+		loginname := getCurrentUserName(r)
+		err := user.DeleteUser(loginname)
 		//succ := (bool)(err == nil)
 		res := toString(err)
 
