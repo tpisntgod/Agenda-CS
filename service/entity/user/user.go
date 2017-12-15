@@ -144,33 +144,23 @@ func LogoutUser() error {
 	return nil
 }
 
-// ListUsers : 列出当前所有用户名，邮箱，密码并组合成字符串返回
+// ListUsers : 返回所有用户信息
 // 如果当前没有用户登录，返回err
-func ListUsers() error {
+func ListUsers() ([]Item, error) {
 	if !IsLogin() {
-		return errors.New("ERROR:No registered user")
+		return nil, errors.New("ERROR:No registered user")
 	}
 
-	outputStr := ""
-	i := 1
-	// 输出标题
-	nextStr := fmt.Sprintf("%-7s|%-12s|%-17s|%-12s\n",
-		"No", "Name", "Email", "Phone")
-	outputStr += nextStr
-	// 依次输出map中的所有值
+	var returnItems []Item
+
+	// 依次添加新元素到数组
 	for _, user := range userItems {
-		nextStr := fmt.Sprintf("%-7d|%-12s|%-17s|%-12s\n",
-			i, user.Name, user.Email, user.PhoneNumber)
-		outputStr += nextStr
-		i++
+		returnItems = append(returnItems, user)
 	}
-	// 输出结尾
-	outputStr += "All user listed as follow.\n"
-	fmt.Printf("%s", outputStr)
 
 	mylog.AddLog(GetLogonUsername(), "ListUsers", "", "")
 
-	return nil
+	return returnItems, nil
 }
 
 // DeleteUser : 删除当前登录用户，删除后当前登录用户置为nil

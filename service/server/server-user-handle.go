@@ -1,6 +1,8 @@
 package server
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/unrolled/render"
@@ -23,7 +25,11 @@ type resj struct {
 // 通过user中的函数，更新CurrentUser
 func updateCurrentUser(r *http.Request) {
 	cookie, err := r.Cookie("Name")
-	user.SetCurrentUser(cookie.Value, err)
+	if cookie != nil {
+		user.SetCurrentUser(cookie.Value, err)
+	} else {
+		user.SetCurrentUser("", err)
+	}
 }
 
 // error.toString
@@ -66,7 +72,7 @@ func initMydb(args []string) {
 	// entities.InitMydb(name, password, port, dname)
 }
 
-// 显示CurrentUser的id和name
+// test
 func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resjson := resj{}
@@ -81,17 +87,12 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
-		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Passname"), r.FormValue("Email"), r.FormValue("Phone"))
+		updateCurrentUser(r)
+		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Password"), r.
+			FormValue("Email"), r.FormValue("Phone"))
 		succ := (bool)(err == nil)
 		res := toString(err)
-
-		formatter.JSON(w, http.StatusOK, struct {
-			Success bool
-			Result  string
-		}{
-			succ,
-			res})
+		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
 	}
 }
 
@@ -101,12 +102,32 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 		// 使用user函数
 		updateCurrentUser(r)
 		r.ParseForm()
+		var userItem user.Item
+		var str string
+		for p := range r.Form {
+			str += p
+		}
+		json.Unmarshal([]byte(str), &userItem)
+		fmt.Println([]byte(str))
+		fmt.Println(userItem.Name)
+		fmt.Println(userItem.HashPassword)
+		fmt.Println(userItem.Email)
+		fmt.Println(userItem.PhoneNumber)
+
 		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"))
 		succ := (bool)(err == nil)
 		res := toString(err)
 
 		// 返回报文
 		if succ {
+			// 如果成功登录，设置cookie
+			cookie := http.Cookie{
+				Name:   "Name",
+				Value:  user.CurrentUser.Name,
+				Path:   "/",
+				MaxAge: 1200}
+			http.SetCookie(w, &cookie)
+
 			resjson := stdResj(succ, res)
 			resjson.Item = *user.CurrentUser
 			formatter.JSON(w, http.StatusOK, resjson)
@@ -119,10 +140,37 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// 使用user函数
 		updateCurrentUser(r)
-		r.ParseForm()
 		err := user.LogoutUser()
+		succ := (bool)(err == nil)
+		res := toString(err)
+		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+	}
+}
+
+// 显示所有用户
+func listUsersHandle(formatter *render.Render) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		updateCurrentUser(r)
+		fmt.Println(r.Cookies())
+		items, err := user.ListUsers()
+		succ := (bool)(err == nil)
+		res := toString(err)
+		if items == nil {
+			formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+		} else {
+			resjson := stdResj(succ, res)
+			resjson.Items = items
+			formatter.JSON(w, http.StatusOK, resjson)
+		}
+	}
+}
+
+// 删除已登录用户
+func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		updateCurrentUser(r)
+		err := user.DeleteUser()
 		succ := (bool)(err == nil)
 		res := toString(err)
 		formatter.JSON(w, http.StatusOK, stdResj(succ, res))

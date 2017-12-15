@@ -38,11 +38,11 @@ func initUserRoutes(mx *mux.Router, formatter *render.Render) {
 	// 登录用户
 	mx.HandleFunc("/v1/user/login", loginUserHandle(formatter)).Methods("POST")
 	// 登出用户
-	mx.HandleFunc("/v1/user/logout", undefinedHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/v1/user/logout", logoutUserHandle(formatter)).Methods("GET")
 	// 显示所有用户
-	mx.HandleFunc("/v1/users", undefinedHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/v1/users", listUsersHandle(formatter)).Methods("GET")
 	// 删除用户
-	mx.HandleFunc("/v1/users", undefinedHandler(formatter)).Methods("DELETE")
+	mx.HandleFunc("/v1/users", deleteUserHandle(formatter)).Methods("DELETE")
 }
 
 func initMeetingRoute(mx *mux.Router, formatter *render.Render) {
