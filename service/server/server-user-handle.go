@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -15,11 +14,9 @@ type resj struct {
 	// 包含userItem属性
 	user.Item
 	// 返回user查询列表
-	Items []user.Item
-	// 结果是否成功
-	Success bool
+	Users []user.Item `json:",omitempty"`
 	// 表示结果
-	Result string
+	Information string
 }
 
 // 通过user中的函数，更新CurrentUser
@@ -41,10 +38,9 @@ func toString(err error) string {
 }
 
 // 标准response JSON，只包含Success和Result
-func stdResj(succ bool, res string) resj {
+func stdResj(inf string) resj {
 	return resj{
-		Success: succ,
-		Result:  res}
+		Information: inf}
 }
 
 func initMydb(args []string) {
@@ -76,10 +72,11 @@ func initMydb(args []string) {
 func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resjson := resj{}
-		resjson.Items = append(resjson.Items, user.Item{"1", "2", "3", "4"})
+		resjson.Users = append(resjson.Users, user.Item{"1", "2", "3", "4"})
 		resjson.Name = "123"
-		resjson.Success = true
-		resjson.Result = "trytry"
+		resjson.Email = "321"
+		resjson.PhoneNumber = "456"
+		resjson.Information = "trytry"
 		formatter.JSON(w, http.StatusOK, resjson)
 	}
 }
@@ -90,9 +87,9 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 		updateCurrentUser(r)
 		err := user.RegisterUser(r.FormValue("Name"), r.FormValue("Password"), r.
 			FormValue("Email"), r.FormValue("Phone"))
-		succ := (bool)(err == nil)
+		//succ := (bool)(err == nil)
 		res := toString(err)
-		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+		formatter.JSON(w, http.StatusOK, stdResj(res))
 	}
 }
 
@@ -102,18 +99,6 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 		// 使用user函数
 		updateCurrentUser(r)
 		r.ParseForm()
-		var userItem user.Item
-		var str string
-		for p := range r.Form {
-			str += p
-		}
-		json.Unmarshal([]byte(str), &userItem)
-		fmt.Println([]byte(str))
-		fmt.Println(userItem.Name)
-		fmt.Println(userItem.HashPassword)
-		fmt.Println(userItem.Email)
-		fmt.Println(userItem.PhoneNumber)
-
 		err := user.LoginUser(r.FormValue("Name"), r.FormValue("Password"))
 		succ := (bool)(err == nil)
 		res := toString(err)
@@ -128,11 +113,11 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 				MaxAge: 1200}
 			http.SetCookie(w, &cookie)
 
-			resjson := stdResj(succ, res)
+			resjson := stdResj(res)
 			resjson.Item = *user.CurrentUser
 			formatter.JSON(w, http.StatusOK, resjson)
 		} else {
-			formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+			formatter.JSON(w, http.StatusOK, stdResj(res))
 		}
 	}
 }
@@ -142,9 +127,9 @@ func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		updateCurrentUser(r)
 		err := user.LogoutUser()
-		succ := (bool)(err == nil)
+		//succ := (bool)(err == nil)
 		res := toString(err)
-		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+		formatter.JSON(w, http.StatusOK, stdResj(res))
 	}
 }
 
@@ -154,13 +139,13 @@ func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 		updateCurrentUser(r)
 		fmt.Println(r.Cookies())
 		items, err := user.ListUsers()
-		succ := (bool)(err == nil)
+		//succ := (bool)(err == nil)
 		res := toString(err)
 		if items == nil {
-			formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+			formatter.JSON(w, http.StatusOK, stdResj(res))
 		} else {
-			resjson := stdResj(succ, res)
-			resjson.Items = items
+			resjson := stdResj(res)
+			resjson.Users = items
 			formatter.JSON(w, http.StatusOK, resjson)
 		}
 	}
@@ -171,9 +156,18 @@ func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		updateCurrentUser(r)
 		err := user.DeleteUser()
-		succ := (bool)(err == nil)
+		//succ := (bool)(err == nil)
 		res := toString(err)
-		formatter.JSON(w, http.StatusOK, stdResj(succ, res))
+
+		if err == nil {
+			// 如果成功删除，设置cookie
+			cookie := http.Cookie{
+				Name:   "Name",
+				Path:   "/",
+				MaxAge: -1}
+			http.SetCookie(w, &cookie)
+		}
+		formatter.JSON(w, http.StatusOK, stdResj(res))
 	}
 }
 

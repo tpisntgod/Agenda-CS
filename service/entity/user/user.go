@@ -18,14 +18,14 @@ var currentUserFilePath = "src/github.com/tpisntgod/Agenda/service/orm/Current.t
 
 // Item 用户信息
 type Item struct {
-	// 用户名字
-	Name string `xorm:"pk"`
+	// 用户名字，是唯一主键
+	Name string `xorm:"pk" json:",omitempty"`
 	// hash过的密码
-	HashPassword string
+	HashPassword string `json:"Password"`
 	// 注册用的邮箱
-	Email string
+	Email string `json:",omitempty"`
 	// 注册用的电话号码
-	PhoneNumber string
+	PhoneNumber string `json:"Phone,omitempty"`
 }
 
 func init() {
