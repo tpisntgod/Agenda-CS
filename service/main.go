@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/bilibiliChangKai/Agenda-CS/service/server"
@@ -23,6 +24,7 @@ func main() {
 		port = *pPort
 	}
 
+	fmt.Println("server runs on port " + port)
 	ser := server.NewServer()
 	ser.Run(":" + port)
 }

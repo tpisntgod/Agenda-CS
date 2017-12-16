@@ -10,6 +10,11 @@ type ItemAtomicService struct{}
 // service 空类型的指针，使用函数
 var service = ItemAtomicService{}
 
+func init() {
+	err := orm.Mydb.Sync(new(Item))
+	orm.CheckErr(err)
+}
+
 // Save 保存
 func (*ItemAtomicService) Save(u *Item) error {
 	_, err := orm.Mydb.Insert(u)
