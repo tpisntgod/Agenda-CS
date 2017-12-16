@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/bilibiliChangKai/Agenda-CS/cmd"
+import "github.com/bilibiliChangKai/Agenda-CS/cli/cmd"
 
 func main() {
 	cmd.Execute()

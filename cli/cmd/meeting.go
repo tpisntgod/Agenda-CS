@@ -23,7 +23,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/smallnest/goreq"
+	"github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie"
 	"github.com/spf13/cobra"
 )
 
@@ -60,11 +60,17 @@ var mcCmd = &cobra.Command{
 			return
 		}
 		data := url.Values{"title": {title}, "participators": participators, "stime": {stime}, "etime": {etime}}
-		res, _, err := goreq.New().Post("http://127.0.0.1:8080/v1/meetings").ContentType("json").SendStruct(data).End()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		newMeeting, err := json.Marshal(data)
+		CheckPanic(err)
+		client := &http.Client{}
+		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/meetings", strings.NewReader(string(newMeeting)))
+		CheckPanic(err)
+		req.AddCookie(cookie.GetCookie())
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		//res, err := http.PostForm("http://127.0.0.1:8080/v1/meetings", data)
+		//res, _, err := goreq.New().Post("http://127.0.0.1:8080/v1/meetings").ContentType("json").SendStruct(data).End()
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 		fmt.Println(title + " created")
@@ -91,14 +97,16 @@ var apCmd = &cobra.Command{
 		}
 		destination := "http://127.0.0.1:8080/v1/meeting/" + title + "/adding-participators"
 		names := url.Values{"participators": participators}
-		data := names.Encode()
-		request, err := http.NewRequest("PATCH", destination, strings.NewReader(data))
-		request.Header.Set("Content-Type", "application/json; charset=utf-8")
-		res, err := http.DefaultClient.Do(request)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		data, err := json.Marshal(names)
+		CheckPanic(err)
+		client := &http.Client{}
+		req, err := http.NewRequest("PATCH", destination, strings.NewReader(string(data)))
+		CheckPanic(err)
+		fmt.Print(string(data) + "\n")
+		req.AddCookie(cookie.GetCookie())
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 	},
@@ -125,12 +133,10 @@ var dpCmd = &cobra.Command{
 		names := url.Values{"participators": participators}
 		data := names.Encode()
 		request, err := http.NewRequest("PATCH", destination, strings.NewReader(data))
+		CheckPanic(err)
 		request.Header.Set("Content-Type", "application/json; charset=utf-8")
 		res, err := http.DefaultClient.Do(request)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 	},
@@ -153,11 +159,9 @@ var mccCmd = &cobra.Command{
 		}
 		destination := "http://127.0.0.1:8080/v1/users/cancel-a-meeting/" + title
 		request, err := http.NewRequest("DELETE", destination, nil)
+		CheckPanic(err)
 		res, err := http.DefaultClient.Do(request)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 	},
@@ -175,11 +179,9 @@ var mclrCmd = &cobra.Command{
 		fmt.Println("mclr called")
 		destination := "http://127.0.0.1:8080/v1/users/cancel-all-meeting"
 		request, err := http.NewRequest("DELETE", destination, nil)
+		CheckPanic(err)
 		res, err := http.DefaultClient.Do(request)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 	},
@@ -202,11 +204,9 @@ var mqCmd = &cobra.Command{
 		}
 		destination := "http://127.0.0.1:8080/v1/users/quit-meeting/" + title
 		request, err := http.NewRequest("PATCH", destination, nil)
+		CheckPanic(err)
 		res, err := http.DefaultClient.Do(request)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 	},
@@ -240,20 +240,14 @@ var msCmd = &cobra.Command{
 		}
 		destination := "http://127.0.0.1:8080/v1/users/query-meeting?stime=" + stime + "&etime=" + etime
 		res, err := http.Get(destination)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
-		result2print, _ := json.MarshalIndent(result["Items"], "", "    ")
+		result2print, _ := json.MarshalIndent(result["Meetings"], "", "    ")
 		fmt.Print(string(result2print) + "\n")
 	},
 }
