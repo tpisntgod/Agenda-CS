@@ -1,0 +1,16 @@
+注册hza
+curl -X POST -H "Content-Type:application/json" --data '{"Name":"hza","Password":"202cb962ac59075b964b07152d234b70","Email":"123@qq.com","Phone":"12345678910"}' localhost:8080/v1/users
+登录hza
+curl -X POST -H "Content-Type:application/json" --data '{"Name":"hza","Password":"202cb962ac59075b964b07152d234b70"}' localhost:8080/v1/user/login
+注册djg
+curl --cookie "username=hza" -X POST -H "Content-Type:application/json" --data '{"Name":"djg","Password":"caf1a3dfb505ffed0d024130f58c5cfa","Email":"321@qq.com","Phone":"32132132110"}' localhost:8080/v1/users
+显示所有用户
+curl --cookie "username=hza" -X GET localhost:8080/v1/users
+删除hza
+curl --cookie "username=hza" -X DELETE localhost:8080//v1/users
+登录djg
+curl -X POST -H "Content-Type:application/json" --data '{"Name":"djg","Password":"caf1a3dfb505ffed0d024130f58c5cfa"}' localhost:8080/v1/user/login
+显示所有用户
+curl --cookie "username=djg" -X GET localhost:8080/v1/users
+登出djg
+curl --cookie "username=djg" -X GET localhost:8080/v1/user/logout

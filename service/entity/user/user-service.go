@@ -10,9 +10,14 @@ type ItemAtomicService struct{}
 // service 空类型的指针，使用函数
 var service = ItemAtomicService{}
 
+func init() {
+	err := orm.Mydb.Sync2(new(Item))
+	orm.CheckErr(err)
+}
+
 // Save 保存
 func (*ItemAtomicService) Save(u *Item) error {
-	_, err := orm.Mydb.Insert(u)
+	_, err := orm.Mydb.Table("item").Insert(u)
 	orm.CheckErr(err)
 	return err
 }
@@ -20,7 +25,7 @@ func (*ItemAtomicService) Save(u *Item) error {
 // FindAll 找到所有Item
 func (*ItemAtomicService) FindAll() []Item {
 	as := []Item{}
-	err := orm.Mydb.Desc("Name").Find(&as)
+	err := orm.Mydb.Table("item").Desc("Name").Find(&as)
 	orm.CheckErr(err)
 	return as
 }
@@ -28,7 +33,7 @@ func (*ItemAtomicService) FindAll() []Item {
 // FindByName 通过主键Name查询数据
 func (*ItemAtomicService) FindByName(name string) *Item {
 	a := &Item{}
-	_, err := orm.Mydb.Id(name).Get(a)
+	_, err := orm.Mydb.Table("item").Id(name).Get(a)
 	orm.CheckErr(err)
 	return a
 }
@@ -36,10 +41,10 @@ func (*ItemAtomicService) FindByName(name string) *Item {
 // DeleteByName 通过主键Name删除数据
 func (*ItemAtomicService) DeleteByName(name string) {
 	// 软删除
-	_, err := orm.Mydb.Id(name).Delete(&Item{})
+	_, err := orm.Mydb.Table("item").Id(name).Delete(&Item{})
 	orm.CheckErr(err)
 
 	// 真正删除
-	_, err = orm.Mydb.Id(name).Unscoped().Delete(&Item{})
+	_, err = orm.Mydb.Table("item").Id(name).Unscoped().Delete(&Item{})
 	orm.CheckErr(err)
 }
