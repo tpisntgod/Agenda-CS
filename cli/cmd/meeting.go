@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -72,7 +71,6 @@ var mcCmd = &cobra.Command{
 			Participator: participators,
 			StartTime:    stime,
 			EndTime:      etime})
-		//newMeeting, err := json.Marshal(data)
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/meetings", strings.NewReader(string(newMeeting)))
@@ -108,13 +106,15 @@ var apCmd = &cobra.Command{
 			return
 		}
 		destination := "http://127.0.0.1:8080/v1/meeting/" + title + "/adding-participators"
-		names := url.Values{"participators": participators}
-		data, err := json.Marshal(names)
+		//names := url.Values{"participators": participators}
+		data, err := json.Marshal(struct {
+			Participator []string
+		}{
+			Participator: participators})
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("PATCH", destination, strings.NewReader(string(data)))
 		CheckPanic(err)
-		fmt.Print(string(data) + "\n")
 		req.AddCookie(cookie.GetCookie())
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
 		res, err := client.Do(req)
@@ -141,13 +141,17 @@ var dpCmd = &cobra.Command{
 			fmt.Println("please input title")
 			return
 		}
+		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/meeting/" + title + "/deleting-participators"
-		names := url.Values{"participators": participators}
-		data := names.Encode()
-		request, err := http.NewRequest("PATCH", destination, strings.NewReader(data))
+		data, err := json.Marshal(struct {
+			Participator []string
+		}{
+			Participator: participators})
+		req, err := http.NewRequest("PATCH", destination, strings.NewReader(string(data)))
 		CheckPanic(err)
-		request.Header.Set("Content-Type", "application/json; charset=utf-8")
-		res, err := http.DefaultClient.Do(request)
+		req.AddCookie(cookie.GetCookie())
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
@@ -169,10 +173,12 @@ var mccCmd = &cobra.Command{
 			fmt.Println("please input the title!")
 			return
 		}
+		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/users/cancel-a-meeting/" + title
-		request, err := http.NewRequest("DELETE", destination, nil)
+		req, err := http.NewRequest("DELETE", destination, nil)
 		CheckPanic(err)
-		res, err := http.DefaultClient.Do(request)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
@@ -189,10 +195,12 @@ var mclrCmd = &cobra.Command{
 	Agenda mclr`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mclr called")
+		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/users/cancel-all-meeting"
-		request, err := http.NewRequest("DELETE", destination, nil)
+		req, err := http.NewRequest("DELETE", destination, nil)
 		CheckPanic(err)
-		res, err := http.DefaultClient.Do(request)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
@@ -214,10 +222,12 @@ var mqCmd = &cobra.Command{
 			fmt.Println("title can not be blank!")
 			return
 		}
+		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/users/quit-meeting/" + title
-		request, err := http.NewRequest("PATCH", destination, nil)
+		req, err := http.NewRequest("PATCH", destination, nil)
 		CheckPanic(err)
-		res, err := http.DefaultClient.Do(request)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
@@ -250,8 +260,11 @@ var msCmd = &cobra.Command{
 			fmt.Println("start time should be less than end time")
 			return
 		}
+		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/users/query-meeting?stime=" + stime + "&etime=" + etime
-		res, err := http.Get(destination)
+		req, err := http.NewRequest("GET", destination, nil)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)

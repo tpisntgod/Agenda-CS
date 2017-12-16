@@ -2,20 +2,19 @@ package cookie
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
+	"runtime"
+	"strings"
 )
 
 var writeFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie/cookie.json"
 var mycookie http.Cookie
 
 func init() {
-	writeFilePath = filepath.Join(*mylog.GetGOPATH(), writeFilePath)
+	writeFilePath = filepath.Join(*GetGOPATH(), writeFilePath)
 }
 
 func ReadCookie() {
@@ -27,9 +26,6 @@ func ReadCookie() {
 	if err != nil {
 		//panic(err)
 	}
-	fmt.Println(mycookie.Name)
-	result2print, _ := json.MarshalIndent(mycookie, "", "    ")
-	fmt.Print(string(result2print) + "\n")
 }
 
 func WriteCookie(cookie *http.Cookie) {
@@ -56,4 +52,21 @@ func ExistCookie() bool {
 		return true
 	}
 	return false
+}
+
+//GetGOPATH 获得用户环境的gopath
+func GetGOPATH() *string {
+	var sp string
+	if runtime.GOOS == "windows" {
+		sp = ";"
+	} else {
+		sp = ":"
+	}
+	goPath := strings.Split(os.Getenv("GOPATH"), sp)
+	for _, v := range goPath {
+		if _, err := os.Stat(filepath.Join(v, "/src/github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie/cookie.go")); !os.IsNotExist(err) {
+			return &v
+		}
+	}
+	return nil
 }

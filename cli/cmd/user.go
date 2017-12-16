@@ -24,7 +24,6 @@ import (
 	"strings"
 
 	"github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie"
-	"github.com/smallnest/goreq"
 	"github.com/spf13/cobra"
 )
 
@@ -116,13 +115,11 @@ var registerCmd = &cobra.Command{
 			Password: hashFunc(password),
 			Email:    email,
 			Phone:    phone})
-		fmt.Println(string(newUser))
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/users", strings.NewReader(string(newUser)))
 		CheckPanic(err)
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		//res, err := http.PostForm("http://127.0.0.1:8080/v1/users", data)
 		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
@@ -163,8 +160,12 @@ var usrDelCmd = &cobra.Command{
 	Agenda usrDel`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrDel called")
-		res, _, err := goreq.New().Delete("http://127.0.0.1:8080/v1/users").SendRawString("delete current user and logout").End()
-		CheckPanic(err[0])
+		client := &http.Client{}
+		req, err := http.NewRequest("DELETE", "http://127.0.0.1:8080/v1/users", nil)
+		CheckPanic(err)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 		cookie.DeleteCookie()
@@ -182,7 +183,11 @@ var usrSchCmd = &cobra.Command{
 	Agenda usrSch `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrSch called")
-		res, err := http.Get("http://127.0.0.1:8080/v1/users")
+		client := &http.Client{}
+		req, err := http.NewRequest("GET", "http://127.0.0.1:8080/v1/users", nil)
+		CheckPanic(err)
+		req.AddCookie(cookie.GetCookie())
+		res, err := client.Do(req)
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
