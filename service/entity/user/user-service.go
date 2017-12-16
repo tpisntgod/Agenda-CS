@@ -11,11 +11,7 @@ type ItemAtomicService struct{}
 var service = ItemAtomicService{}
 
 func init() {
-<<<<<<< HEAD
-	err := orm.Mydb.Sync(new(Item))
-=======
 	err := orm.Mydb.Sync2(new(Item))
->>>>>>> f890abee758803ed374098a08edcc33a2abca2f7
 	orm.CheckErr(err)
 }
 
