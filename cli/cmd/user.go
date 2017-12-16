@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie"
@@ -52,10 +51,13 @@ var loginCmd = &cobra.Command{
 			fmt.Println("please logout first")
 			return
 		}
-		data := make(url.Values)
-		data["username"] = []string{username}
-		data["password"] = []string{hashFunc(password)}
-		user, err := json.Marshal(data)
+
+		user, err := json.Marshal(struct {
+			Name     string
+			Password string
+		}{
+			Name:     username,
+			Password: hashFunc(password)})
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/user/login", strings.NewReader(string(user)))
@@ -76,8 +78,8 @@ var loginCmd = &cobra.Command{
 var registerCmd = &cobra.Command{
 	Use:   "register",
 	Short: "creating a new agenda account",
-	Long: `Command register is used to create a new user account. 
-	You need to provide a username, a password, an email and a phone num. 
+	Long: `Command register is used to create a new user account.
+	You need to provide a username, a password, an email and a phone num.
 	For example:
 
 	Agenda register -uABB -p123 -e123@163.com -n13579`,
@@ -103,8 +105,18 @@ var registerCmd = &cobra.Command{
 			fmt.Println("phone number can not be blank.")
 			return
 		}
-		data := url.Values{"username": {username}, "password": {hashFunc(password)}, "email": {email}, "phone": {phone}}
-		newUser, err := json.Marshal(data)
+		// data := url.Values{"username": username, "password": {hashFunc(password)}, "email": {email}, "phone": {phone}}
+		newUser, err := json.Marshal(struct {
+			Name     string
+			Password string
+			Email    string
+			Phone    string
+		}{
+			Name:     username,
+			Password: hashFunc(password),
+			Email:    email,
+			Phone:    phone})
+		fmt.Println(string(newUser))
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/users", strings.NewReader(string(newUser)))

@@ -53,10 +53,10 @@ func LoginUser(name string, password string, loginname string) (*Item, error) {
 	if pitem.HashPassword != password {
 		return nil, errors.New("ERROR:The user's password is wrong")
 	}
+	fmt.Println(pitem)
 
 	// 成功登录
 	mylog.AddLog(name, "LoginUser", "", "")
-	//fmt.Println("Hi " + name + "!")
 	return pitem, nil
 }
 

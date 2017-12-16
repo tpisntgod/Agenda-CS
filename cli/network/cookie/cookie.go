@@ -7,13 +7,18 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
 )
 
-var writeFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/network/cookie/cookie.json"
+var writeFilePath = "src/github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie/cookie.json"
 var mycookie http.Cookie
 
+func init() {
+	writeFilePath = filepath.Join(*mylog.GetGOPATH(), writeFilePath)
+}
+
 func ReadCookie() {
-	writeFilePath = filepath.Join(os.Getenv("GOPATH"), writeFilePath)
 	data, err := ioutil.ReadFile(writeFilePath)
 	if err != nil {
 		panic(err)
@@ -28,7 +33,6 @@ func ReadCookie() {
 }
 
 func WriteCookie(cookie *http.Cookie) {
-	writeFilePath := filepath.Join(os.Getenv("GOPATH"), writeFilePath)
 	b, err := json.Marshal(cookie)
 	if err != nil {
 		panic(err)
@@ -40,7 +44,6 @@ func WriteCookie(cookie *http.Cookie) {
 }
 
 func DeleteCookie() {
-	writeFilePath = filepath.Join(os.Getenv("GOPATH"), writeFilePath)
 	os.Remove(writeFilePath)
 }
 func GetCookie() *http.Cookie {
@@ -48,7 +51,6 @@ func GetCookie() *http.Cookie {
 	return &mycookie
 }
 func ExistCookie() bool {
-	writeFilePath = filepath.Join(os.Getenv("GOPATH"), writeFilePath)
 	_, err := os.Stat(writeFilePath)
 	if err == nil {
 		return true

@@ -59,8 +59,20 @@ var mcCmd = &cobra.Command{
 			fmt.Println("start time should be less than end time")
 			return
 		}
-		data := url.Values{"title": {title}, "participators": participators, "stime": {stime}, "etime": {etime}}
-		newMeeting, err := json.Marshal(data)
+		//data := url.Values{"title": {title}, "participators": participators, "stime": {stime}, "etime": {etime}}
+		newMeeting, err := json.Marshal(struct {
+			Title        string
+			Host         string
+			Participator []string
+			StartTime    string
+			EndTime      string
+		}{
+			Title:        title,
+			Host:         title,
+			Participator: participators,
+			StartTime:    stime,
+			EndTime:      etime})
+		//newMeeting, err := json.Marshal(data)
 		CheckPanic(err)
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/meetings", strings.NewReader(string(newMeeting)))
@@ -82,7 +94,7 @@ var mcCmd = &cobra.Command{
 var apCmd = &cobra.Command{
 	Use:   "ap",
 	Short: "to add some participators to a meeting",
-	Long: `to add some participators to a meeting with 
+	Long: `to add some participators to a meeting with
 	the title of the meeting and the name of the new participators.
 	 For example:
 
@@ -116,7 +128,7 @@ var apCmd = &cobra.Command{
 var dpCmd = &cobra.Command{
 	Use:   "dp",
 	Short: "to delete some participators to a meeting",
-	Long: `to delete some participators to a meeting with 
+	Long: `to delete some participators to a meeting with
 	the title of the meeting and the name of the new participators.
 	 For example:
 

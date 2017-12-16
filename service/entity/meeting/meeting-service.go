@@ -11,7 +11,7 @@ type MeetingInfoAtomicService struct{}
 var MeetingInfoService = MeetingInfoAtomicService{}
 
 func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
-	_, err := MeetingDB.Insert(m)
+	_, err := MeetingDB.Table("meetinginformation").Insert(m)
 	checkErr(err)
 	if err == nil {
 		fmt.Println("create success")

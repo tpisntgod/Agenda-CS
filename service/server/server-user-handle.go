@@ -35,7 +35,6 @@ func toString(err error) string {
 // 解析传过来的JSON和cookie
 func praseJSONandCookie(r *http.Request) (*simplejson.Json, string) {
 	// 解析json
-	fmt.Println(r.Body)
 	body, err := ioutil.ReadAll(r.Body)
 	orm.CheckErr(err)
 	defer r.Body.Close()
@@ -73,7 +72,10 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		js, _ := praseJSONandCookie(r)
+		//ttt, _ := js.MarshalJSON()
+		fmt.Println(js.Get("Name").MustString())
 		err := user.RegisterUser(
 			js.Get("Name").MustString(),
 			js.Get("Password").MustString(),
@@ -98,6 +100,7 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 
 		// 返回报文
 		if succ {
+			fmt.Println("COOKIENAME:" + pitem.Name)
 			// 如果成功登录，设置cookie
 			cookie := http.Cookie{
 				Name:   "username",
