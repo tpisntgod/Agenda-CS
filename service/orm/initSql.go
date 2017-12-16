@@ -17,16 +17,6 @@ func init() {
 		panic(err)
 	}
 
-	// err = db.Sync(new(UserItem))
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// err = db.Sync(new(meeting.))
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	Mydb = db
 }
 

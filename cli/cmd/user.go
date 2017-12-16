@@ -15,12 +15,16 @@
 package cmd
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
+	"github.com/bilibiliChangKai/Agenda-CS/cli/network/cookie"
 	"github.com/smallnest/goreq"
 	"github.com/spf13/cobra"
 )
@@ -36,7 +40,6 @@ var loginCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("user")
 		password, _ := cmd.Flags().GetString("password")
-
 		if username == "" {
 			fmt.Println("please input your username")
 			return
@@ -45,18 +48,26 @@ var loginCmd = &cobra.Command{
 			fmt.Println("please input your password")
 			return
 		}
-		data := make(url.Values)
-		data["username"] = []string{username}
-		data["password"] = []string{password}
-
-		res, err := http.PostForm("http://127.0.0.1:8080/v1/user/login", data)
-		if err != nil {
-			fmt.Println(err.Error())
+		if cookie.ExistCookie() {
+			fmt.Println("please logout first")
 			return
 		}
+		data := make(url.Values)
+		data["username"] = []string{username}
+		data["password"] = []string{hashFunc(password)}
+		user, err := json.Marshal(data)
+		CheckPanic(err)
+		client := &http.Client{}
+		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/user/login", strings.NewReader(string(user)))
+		CheckPanic(err)
+		//res, err := http.Post("http://127.0.0.1:8080/v1/user/login", bytes.NewBuffer(user))
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
-
+		CurCookies := res.Cookies()
+		cookie.WriteCookie(CurCookies[0])
 		fmt.Println(username + " is logined")
 	},
 }
@@ -92,20 +103,19 @@ var registerCmd = &cobra.Command{
 			fmt.Println("phone number can not be blank.")
 			return
 		}
-		/*if err := user.RegisterUser(username, password, email, phone); err != nil {
-			fmt.Println(err)
-			os.Exit(6)
-		} it is examined by server */
-		data := url.Values{"username": {username}, "password": {password}, "email": {email}, "phone": {phone}}
-		res, err := http.PostForm("http://127.0.0.1:8080/v1/users", data)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
+		data := url.Values{"username": {username}, "password": {hashFunc(password)}, "email": {email}, "phone": {phone}}
+		newUser, err := json.Marshal(data)
+		CheckPanic(err)
+		client := &http.Client{}
+		req, err := http.NewRequest("POST", "http://127.0.0.1:8080/v1/users", strings.NewReader(string(newUser)))
+		CheckPanic(err)
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+		//res, err := http.PostForm("http://127.0.0.1:8080/v1/users", data)
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 		fmt.Println("a new account is registered named by " + username)
-
 	},
 }
 
@@ -118,13 +128,16 @@ var logoutCmd = &cobra.Command{
 	Agenda logout`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("logout called")
-		res, err := http.Get("http://127.0.0.1:8080/v1/user/logout")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		client := &http.Client{}
+		req, err := http.NewRequest("GET", "http://127.0.0.1:8080/v1/user/logout", nil)
+		CheckPanic(err)
+		req.AddCookie(cookie.GetCookie())
+		//res, err := http.Get("http://127.0.0.1:8080/v1/user/logout")
+		res, err := client.Do(req)
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		cookie.DeleteCookie()
 		fmt.Println("logout successfully")
 	},
 }
@@ -139,12 +152,10 @@ var usrDelCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrDel called")
 		res, _, err := goreq.New().Delete("http://127.0.0.1:8080/v1/users").SendRawString("delete current user and logout").End()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err[0])
 		defer res.Body.Close()
 		DealWithResponse(res)
+		cookie.DeleteCookie()
 		fmt.Println("user is canceled successfully.")
 	},
 }
@@ -160,22 +171,24 @@ var usrSchCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrSch called")
 		res, err := http.Get("http://127.0.0.1:8080/v1/users")
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
 		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
 		result2print, _ := json.MarshalIndent(result["Items"], "", "    ")
 		fmt.Print(string(result2print) + "\n")
 	},
+}
+
+//hash the password
+func hashFunc(hashString string) string {
+	h := md5.New()
+	h.Write([]byte(hashString))
+	cipheStr := h.Sum(nil)
+	return hex.EncodeToString(cipheStr)
 }
 
 func init() {

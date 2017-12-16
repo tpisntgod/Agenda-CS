@@ -47,6 +47,7 @@ func initUserRoutes(mx *mux.Router, formatter *render.Render) {
 
 //会议逻辑，路由设置
 func initMeetingRoute(mx *mux.Router, formatter *render.Render) {
+<<<<<<< HEAD
 	//创建会议
 	mx.HandleFunc("/v1/meetings", createMeetingHandler(formatter)).Methods("POST")
 	//增加会议参与者
@@ -61,6 +62,22 @@ func initMeetingRoute(mx *mux.Router, formatter *render.Render) {
 	mx.HandleFunc("/v1/users/quit-meeting/{title}", quitMeetingHandler(formatter)).Methods("PATCH")
 	//清空会议
 	mx.HandleFunc("/v1/users/cancel-all-meeting", clearAllMeetingsHandler(formatter)).Methods("DELETE")
+=======
+	// // 显示所有会议
+	// mx.HandleFunc("/v1/users/{id}/all-meetings", undefinedHandler(formatter)).Methods("GET")
+	// // 退出会议
+	// mx.HandleFunc("/v1/users/{id}/quit-meeting/{title} ", undefinedHandler(formatter)).Methods("DELETE")
+	// // 取消会议
+	// mx.HandleFunc("/v1/users/{id}/cancel-meeting/{title}", undefinedHandler(formatter)).Methods("DELETE")
+	// // 取消所有会议
+	// mx.HandleFunc("/v1/users/cancel-all-meeting", undefinedHandler(formatter)).Methods("DELETE")
+	// // 会议创建参与者
+	// mx.HandleFunc("/v1/meeting/{title}/add-participators", undefinedHandler(formatter)).Methods("PUT")
+	// // 会议删除参与者
+	// mx.HandleFunc("/v1/meeting/{title}/delete-participators", undefinedHandler(formatter)).Methods("DELETE")
+	// // 显示用户参加的所有会议
+	// mx.HandleFunc("/v1/meetings", undefinedHandler(formatter)).Methods("GET")
+>>>>>>> f890abee758803ed374098a08edcc33a2abca2f7
 }
 
 func testHandler(formatter *render.Render) http.HandlerFunc {

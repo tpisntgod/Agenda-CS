@@ -25,7 +25,7 @@ func IsLogin(name string) bool {
 // RegisterUser : 注册用户，如果用户名一样，则返回err
 func RegisterUser(name string, password string,
 	email string, phoneNumber string) error {
-	if service.FindByName(name) != nil {
+	if service.FindByName(name).Name != "" {
 		return errors.New("ERROR:The user has registered")
 	}
 
@@ -50,7 +50,7 @@ func LoginUser(name string, password string, loginname string) (*Item, error) {
 	}
 
 	// 密码错误
-	if pitem.HashPassword != hashFunc(password) {
+	if pitem.HashPassword != password {
 		return nil, errors.New("ERROR:The user's password is wrong")
 	}
 
