@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/bilibiliChangKai/Agenda-CS/service/entity/meeting"
 	"github.com/unrolled/render"
 )
@@ -16,7 +18,7 @@ type resjson struct {
 	Information string
 }
 
-//meetingjson 用于json解析的会议数据实体
+//meetingjson 创建会议 存放json解析后的数据
 type meetingjson struct {
 	//会议主题
 	Title string
@@ -28,6 +30,12 @@ type meetingjson struct {
 	StartTime string
 	//结束时间
 	EndTime string
+}
+
+//增加会议参与者 存放json解析后的数据
+type meetingAddjson struct {
+	//会议参与者
+	Participator []string
 }
 
 var meetingService = meeting.MeetingInfoService
@@ -63,55 +71,24 @@ func getResponseJson(info string) resjson {
 func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
-		/*
-			bodyString := string(body)
-			fmt.Println(bodyString)*/
-
 		var meetingj meetingjson
-		//var meeting meeting.Meeting
 		if err := json.Unmarshal(body, &meetingj); err == nil {
-			fmt.Println(meetingj)
-
 			starttime, _ := time.Parse("2006-01-02 15:04:05", meetingj.StartTime)
 			endtime, _ := time.Parse("2006-01-02 15:04:05", meetingj.EndTime)
 			meeting := meeting.Meeting{Title: meetingj.Title, Host: getCurrentUserNameMeeting(r),
 				Participator: getParticipatorsName(meetingj.Participator), StartTime: starttime, EndTime: endtime}
-
-			fmt.Println("meetingj.Participator")
-			for i := 0; i < len(meetingj.Participator); i++ {
-				fmt.Println(meetingj.Participator[i])
-			}
-
-			fmt.Println("meeting")
-			fmt.Println(meeting)
-
 			err := meetingService.CreateMeeting(meeting)
 			var info string
 			if err != nil {
-				info = toString(err)
+				info = err.Error()
 			} else {
 				info = "create meeting succeed"
 			}
 			formatter.JSON(w, http.StatusOK, getResponseJson(info))
-			/*
-				ret, _ := json.Marshal(meetingj)
-				fmt.Fprint(w, "\n")
-				fmt.Fprint(w, string(ret))*/
 		} else {
 			fmt.Println(err)
 		}
-
 		return
-		/*
-			r.ParseForm()
-			participators := getParticipatorsName(r.Form["participators"])
-			starttime, _ := time.Parse("2006-01-02 15:04:05", r.Form["stime"][0])
-			endtime, _ := time.Parse("2006-01-02 15:04:05", r.Form["etime"][0])
-			m := meeting.Meeting{Title: r.Form["title"][0], Host: getCurrentUserName(r),
-				Participator: participators, StartTime: starttime, EndTime: endtime}
-			err := meetingService.CreateMeeting(m)
-			info := toString(err)
-			formatter.JSON(w, http.StatusOK, getResponseJson(info))*/
 	}
 }
 
@@ -119,10 +96,25 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-		if len(r.Form["title"]) == 0 {
-			fmt.Println("parse error")
-		} else {
-			fmt.Println("title:", r.Form["title"][0])
+		/*
+			if len(r.Form["title"]) == 0 {
+				fmt.Println("parse error")
+			} else {
+				fmt.Println("title:", r.Form["title"][0])
+			}*/
+		url := mux.Vars(r)
+		title := url["title"]
+		body, _ := ioutil.ReadAll(r.Body)
+		var meetinga meetingAddjson
+		if err := json.Unmarshal(body, &meetinga); err == nil {
+			err := meetingService.AddMeetingParticipators(title, meetinga.Participator)
+			var info string
+			if err != nil {
+				info = err.Error()
+			} else {
+				info = "add participators succeed"
+			}
+			formatter.JSON(w, http.StatusOK, getResponseJson(info))
 		}
 	}
 }
