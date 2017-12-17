@@ -261,7 +261,7 @@ var msCmd = &cobra.Command{
 			return
 		}
 		client := &http.Client{}
-		destination := "http://127.0.0.1:8080/v1/users/query-meeting?stime=" + stime + "&etime=" + etime
+		destination := "http://127.0.0.1:8080/v1/users/query-meeting?starttime=" + stime + "&endtime=" + etime
 		req, err := http.NewRequest("GET", destination, nil)
 		req.AddCookie(cookie.GetCookie())
 		res, err := client.Do(req)

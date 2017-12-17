@@ -5,3 +5,6 @@ To:{Name:ykj2  Email:1  Phone:234}
 [INFO]00:41:03 User:ykj  Command:LoginUser
 [INFO]00:43:27 Command:RegisterUser
 To:{Name:ykj3  Email:1  Phone:234}
+[INFO]11:18:31 Command:RegisterUser
+To:{Name:aa  Email:1  Phone:1}
+[INFO]11:18:42 User:aa  Command:LoginUser

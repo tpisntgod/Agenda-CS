@@ -22,8 +22,6 @@ type resjson struct {
 type meetingjson struct {
 	//会议主题
 	Title string
-	//会议发起者
-	Host string
 	//会议参与者
 	Participator []string
 	//开始时间
@@ -70,6 +68,7 @@ func getResponseJson(info string) resjson {
 //创建会议 /v1/meetings
 func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("createMeetingHandler")
 		body, _ := ioutil.ReadAll(r.Body)
 		var meetingj meetingjson
 		if err := json.Unmarshal(body, &meetingj); err == nil {
@@ -96,12 +95,6 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-		/*
-			if len(r.Form["title"]) == 0 {
-				fmt.Println("parse error")
-			} else {
-				fmt.Println("title:", r.Form["title"][0])
-			}*/
 		url := mux.Vars(r)
 		title := url["title"]
 		body, _ := ioutil.ReadAll(r.Body)
@@ -128,6 +121,15 @@ func deleteParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 //查询会议 /v1/users/query-meeting{?starttime,endtime}
 func queryMeetingsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("queryMeetingsHandler")
+		r.ParseForm()
+		fmt.Println(r.Form)
+		stime := r.Form["starttime"][0]
+		//etime := r.Form["endtime"][0]
+		starttime, _ := time.Parse("2006-01-02 15:04:05", stime)
+		//endtime, _ := time.Parse("2006-01-02 15:04:05", etime)
+		fmt.Println(stime)
+		fmt.Println(starttime)
 	}
 }
 
