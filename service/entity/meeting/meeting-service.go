@@ -4,8 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+<<<<<<< HEAD
 
 	"github.com/bilibiliChangKai/Agenda-CS/service/entity/user"
+=======
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 )
 
 //MeetingInfoAtomicService .
@@ -14,6 +17,7 @@ type MeetingInfoAtomicService struct{}
 //MeetingInfoService .
 var MeetingInfoService = MeetingInfoAtomicService{}
 
+<<<<<<< HEAD
 //meetingjson 创建会议 存放json解析后的数据
 type meetingjson struct {
 	//会议主题
@@ -43,6 +47,8 @@ func checkUserRegistered(p []string) error {
 	return nil
 }
 
+=======
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 //CreateMeeting 创建会议
 func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 	meeting := new(Meeting)
@@ -66,6 +72,7 @@ func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 		fmt.Println("create success")
 		return nil
 	}
+<<<<<<< HEAD
 	fmt.Println("create error")
 	return errors.New("meeting insert failed")
 }
@@ -82,15 +89,29 @@ func checkUserAlreadyJoin(alreadyjoin []string, p []string) error {
 	return nil
 }
 
+=======
+	fmt.Println("create err")
+	return errors.New("meeting title already exists")
+}
+
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 //AddMeetingParticipators 增加会议参与者
 func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []string) error {
 	//meeting := Meeting{Title: title}
 	meeting := new(Meeting)
 	has, err := MeetingDB.Id(title).Get(meeting)
+<<<<<<< HEAD
+=======
+	fmt.Println("get meeting")
+	fmt.Println(meeting)
+	alreadyJoin := strings.Split(meeting.Participator, ";")
+	fmt.Println(alreadyJoin)
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 	checkErr(err)
 	if has == false {
 		return errors.New("this meeting doesn't exist,add participator failed")
 	}
+<<<<<<< HEAD
 	alreadyJoin := strings.Split(meeting.Participator, ";")
 	err = checkUserRegistered(p)
 	if err != nil {
@@ -101,6 +122,8 @@ func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []strin
 		return err
 	}
 	//check user 参加会议判断时间重叠
+=======
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 	var add string
 	for i := 0; i < len(p); i++ {
 		add += ";" + p[i]
@@ -108,11 +131,19 @@ func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []strin
 	meeting.Participator += add
 	fmt.Println("add participators")
 	fmt.Println(meeting)
+<<<<<<< HEAD
 
 	_, err = MeetingDB.Id(title).Update(meeting)
 	if err != nil {
 		return err
 	}
+=======
+	/*
+		_, err = MeetingDB.Id(title).Update(meeting)
+		if err != nil {
+			return err
+		}*/
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 	return nil
 }
 

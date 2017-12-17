@@ -95,6 +95,15 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
+<<<<<<< HEAD
+=======
+		/*
+			if len(r.Form["title"]) == 0 {
+				fmt.Println("parse error")
+			} else {
+				fmt.Println("title:", r.Form["title"][0])
+			}*/
+>>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 		url := mux.Vars(r)
 		title := url["title"]
 		body, _ := ioutil.ReadAll(r.Body)
