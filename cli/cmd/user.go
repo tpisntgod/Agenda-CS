@@ -137,6 +137,10 @@ var logoutCmd = &cobra.Command{
 	Agenda logout`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("logout called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", "http://127.0.0.1:8080/v1/user/logout", nil)
 		CheckPanic(err)
@@ -160,6 +164,10 @@ var usrDelCmd = &cobra.Command{
 	Agenda usrDel`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrDel called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		client := &http.Client{}
 		req, err := http.NewRequest("DELETE", "http://127.0.0.1:8080/v1/users", nil)
 		CheckPanic(err)
@@ -183,6 +191,10 @@ var usrSchCmd = &cobra.Command{
 	Agenda usrSch `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrSch called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", "http://127.0.0.1:8080/v1/users", nil)
 		CheckPanic(err)

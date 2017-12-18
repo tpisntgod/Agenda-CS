@@ -60,6 +60,7 @@ func DealWithResponse(res *http.Response) {
 		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
+		fmt.Println(res.Status)
 		fmt.Println(result["Information"])
 		os.Exit(1)
 	}
