@@ -1,5 +1,4 @@
-service/log
+service/log/*
 cli/main
-
-agenda-cs.db
-cookie.json
+service/agenda-cs.db
+cli/network/cookie/cookie.json

@@ -81,10 +81,12 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 			var info string
 			if err != nil {
 				info = err.Error()
+				formatter.JSON(w, http.StatusBadRequest, getResponseJson(info))
 			} else {
 				info = "create meeting succeed"
+				formatter.JSON(w, http.StatusOK, getResponseJson(info))
 			}
-			formatter.JSON(w, http.StatusOK, getResponseJson(info))
+			fmt.Println(info)
 		} else {
 			fmt.Println(err)
 		}
@@ -105,12 +107,13 @@ func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 			var info string
 			if err != nil {
 				info = err.Error()
+				formatter.JSON(w, http.StatusBadRequest, getResponseJson(info))
 			} else {
 				info = "add participators succeed"
+				formatter.JSON(w, http.StatusOK, getResponseJson(info))
 			}
-			formatter.JSON(w, http.StatusOK, getResponseJson(info))
 		} else {
-			formatter.JSON(w, http.StatusOK, getResponseJson(err.Error()))
+			formatter.JSON(w, http.StatusBadRequest, getResponseJson(err.Error()))
 		}
 	}
 }
@@ -135,10 +138,11 @@ func queryMeetingsHandler(formatter *render.Render) http.HandlerFunc {
 		var info string
 		if err != nil {
 			info = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, getResponseJson(info))
 		} else {
 			info = queryMeetingResult
+			formatter.JSON(w, http.StatusOK, getResponseJson(info))
 		}
-		formatter.JSON(w, http.StatusOK, getResponseJson(info))
 	}
 }
 
