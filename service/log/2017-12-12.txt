@@ -1,4 +1,0 @@
-[INFO]13:55:48 User:qwe1  Command:CreateMeeting
-To:{Title:2017-12-12 13:55:48  Host:qwe1  Participor:aa bb cc qwe1  Begin Time:2017-12-12 13:55:48  End Time:2017-12-12 13:55:49}
-[INFO]13:57:12 User:qwe1  Command:CreateMeeting
-To:{Title:2017-12-12 13:57:12  Host:qwe1  Participor:aa bb cc qwe1  Begin Time:2017-12-12 13:57:12  End Time:2017-12-12 13:57:13}

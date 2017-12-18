@@ -15,7 +15,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -54,7 +56,11 @@ func DealWithResponse(res *http.Response) {
 	case "2":
 		return
 	default:
-		fmt.Println(res.Status)
+		body, err := ioutil.ReadAll(res.Body)
+		CheckPanic(err)
+		result := map[string]interface{}{}
+		json.Unmarshal(body, &result)
+		fmt.Println(result["Information"])
 		os.Exit(1)
 	}
 }

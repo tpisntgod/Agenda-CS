@@ -5,7 +5,11 @@ FROM go:lastest
 WORKDIR /service
 
 # 添加文件
+<<<<<<< HEAD
 ADD ./service /service
+=======
+ADD ./service/main /service/main
+>>>>>>> tp-master
 
 # 定义GOPATH变量
 #ENV GOPATH /service

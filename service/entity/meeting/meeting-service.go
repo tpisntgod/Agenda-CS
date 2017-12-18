@@ -75,7 +75,7 @@ func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 	checkErr(err)
 	//title是否已经创建
 	if has {
-		return errors.New("this meeting title already exists,Create Meeting failed")
+		return errors.New("this meeting title already exists,create meeting failed")
 	}
 	participators := strings.Split(m.Participator, ";")
 	fmt.Println(participators)
@@ -90,14 +90,13 @@ func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 		sql := "select * from meetinginformation where participators like '%" + participators[i] + "%'"
 		result, err := GetMeetingInTimeInterval(1, participators[i], sql, m.StartTime, m.EndTime)
 		if result != "" {
-			return errors.New("user " + participators[i] + " time conflict")
+			return errors.New("user " + participators[i] + " time conflict,create meeting failed")
 		}
 		if err != nil {
 			return err
 		}
 	}
 
-	//
 	_, err = MeetingDB.Table("meetinginformation").Insert(m)
 	checkErr(err)
 	if err == nil {
@@ -113,7 +112,7 @@ func checkUserAlreadyJoin(alreadyjoin []string, p []string) error {
 	for i := 0; i < len(p); i++ {
 		for j := 0; j < len(alreadyjoin); j++ {
 			if p[i] == alreadyjoin[j] {
-				return errors.New("user " + p[i] + " already joined the meeting")
+				return errors.New("user " + p[i] + " already joined the meeting,add participators failed")
 			}
 		}
 	}
@@ -144,7 +143,7 @@ func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []strin
 		sql := "select * from meetinginformation where participators like '%" + p[i] + "%'"
 		result, err := GetMeetingInTimeInterval(1, p[i], sql, meeting.StartTime, meeting.EndTime)
 		if result != "" {
-			return errors.New("user " + p[i] + " time conflict")
+			return errors.New("user " + p[i] + " time conflict,add participator failed")
 		}
 		if err != nil {
 			return err
@@ -195,6 +194,8 @@ func CheckUserInMeeting(queryType int, host string, participators string, user s
 	return usercheck
 }
 
+var checkDup map[string]int
+
 //GetMeetingInTimeInterval 判断用户加入的会议是否与此时间段冲突
 //返回值第一个是""的话，表示没有会议时间重叠
 func GetMeetingInTimeInterval(queryType int, user string, sql string, starttime time.Time, endTime time.Time) (string, error) {
@@ -203,8 +204,9 @@ func GetMeetingInTimeInterval(queryType int, user string, sql string, starttime 
 	if err != nil {
 		return "", err
 	}
-	var checkDup map[string]int
-	checkDup = make(map[string]int)
+	if queryType == 1 {
+		checkDup = make(map[string]int)
+	}
 	var meetingInfo string
 	for _, k := range results {
 		title := string(k["title"])

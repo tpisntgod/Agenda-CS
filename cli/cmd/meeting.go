@@ -83,8 +83,7 @@ var mcCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
-		fmt.Println(title + " created")
-
+		fmt.Println("create meeting" + title + "successfully")
 	},
 }
 
@@ -121,6 +120,7 @@ var apCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("meeting:" + title + " add participators successfully")
 	},
 }
 
@@ -241,17 +241,17 @@ var msCmd = &cobra.Command{
 	Long: `to search those meetings in the time slot you provide
 	For example:
 
-	Agenda ms -s"2017-10-28 09:30" -e"2017-10-28 10:30"`,
+	Agenda ms -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("ms called")
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
 		if stime == "" {
-			fmt.Println("starttime can not be blank.The format is 2017-01-01 09:00")
+			fmt.Println("starttime can not be blank.The format is 2017-01-01 09:00:00")
 			return
 		}
 		if etime == "" {
-			fmt.Println("endtime can not be blank.The format is 2017-01-01 09:00")
+			fmt.Println("endtime can not be blank.The format is 2017-01-01 09:00:00")
 			return
 		}
 		t1, _ := time.Parse("2006-01-02 15:04:05", stime)
@@ -261,7 +261,10 @@ var msCmd = &cobra.Command{
 			return
 		}
 		client := &http.Client{}
-		destination := "http://127.0.0.1:8080/v1/users/query-meeting?starttime=" + stime + "&endtime=" + etime
+		starttime := strings.Split(stime, " ")
+		endtime := strings.Split(etime, " ")
+		destination := "http://127.0.0.1:8080/v1/users/query-meeting?starttime=" + starttime[0] + "%20" +
+			starttime[1] + "&endtime=" + endtime[0] + "%20" + endtime[1]
 		req, err := http.NewRequest("GET", destination, nil)
 		req.AddCookie(cookie.GetCookie())
 		res, err := client.Do(req)
@@ -272,8 +275,14 @@ var msCmd = &cobra.Command{
 		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
-		result2print, _ := json.MarshalIndent(result["Meetings"], "", "    ")
-		fmt.Print(string(result2print) + "\n")
+		fmt.Print(result["Information"])
+		/*
+			body, err := ioutil.ReadAll(res.Body)
+			CheckPanic(err)
+			result := map[string]interface{}{}
+			json.Unmarshal(body, &result)
+			result2print, _ := json.MarshalIndent(result["Meetings"], "", "    ")
+			fmt.Print(string(result2print) + "\n")*/
 	},
 }
 
