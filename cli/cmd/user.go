@@ -195,7 +195,7 @@ var usrSchCmd = &cobra.Command{
 		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
-		result2print, _ := json.MarshalIndent(result["Items"], "", "    ")
+		result2print, _ := json.MarshalIndent(result["Users"], "", "    ")
 		fmt.Print(string(result2print) + "\n")
 	},
 }
