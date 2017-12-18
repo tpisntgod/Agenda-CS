@@ -36,6 +36,10 @@ var mcCmd = &cobra.Command{
 	Agenda mc -ttest -pPeter -pMarry -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mc called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
 		stime, _ := cmd.Flags().GetString("stime")
@@ -83,7 +87,11 @@ var mcCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+<<<<<<< HEAD
 		fmt.Println("create meeting " + title + " successfully")
+=======
+		fmt.Println("create meeting " + title + "successfully")
+>>>>>>> 483acc03ce832edcb1bc6068188291ce3bae2b15
 	},
 }
 
@@ -98,6 +106,10 @@ var apCmd = &cobra.Command{
 	Agenda ap -ttitle -pPeter -pMarry`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("ap called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
 		if title == "" {
@@ -135,6 +147,10 @@ var dpCmd = &cobra.Command{
 	./dpp dp -ttitle -pPeter -pMarry`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("dp called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
 		if title == "" {
@@ -155,6 +171,7 @@ var dpCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("meeting:" + title + " delete participators successfully")
 	},
 }
 
@@ -168,6 +185,10 @@ var mccCmd = &cobra.Command{
 	Agenda mcc -ttitle`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mcc called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		title, _ := cmd.Flags().GetString("title")
 		if title == "" {
 			fmt.Println("please input the title!")
@@ -182,6 +203,7 @@ var mccCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("you have canceled the meeting " + title)
 	},
 }
 
@@ -195,6 +217,10 @@ var mclrCmd = &cobra.Command{
 	Agenda mclr`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mclr called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		client := &http.Client{}
 		destination := "http://127.0.0.1:8080/v1/users/cancel-all-meeting"
 		req, err := http.NewRequest("DELETE", destination, nil)
@@ -204,6 +230,7 @@ var mclrCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("you have canceled all the meetings you sponsored")
 	},
 }
 
@@ -217,6 +244,10 @@ var mqCmd = &cobra.Command{
 	Agenda mq -ttitle`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mq called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		title, _ := cmd.Flags().GetString("title")
 		if title == "" {
 			fmt.Println("title can not be blank!")
@@ -231,6 +262,7 @@ var mqCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("you have quited the meeting " + title)
 	},
 }
 
@@ -244,6 +276,10 @@ var msCmd = &cobra.Command{
 	Agenda ms -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("ms called")
+		if !cookie.ExistCookie() {
+			fmt.Println("please login first")
+			return
+		}
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
 		if stime == "" {
@@ -275,7 +311,7 @@ var msCmd = &cobra.Command{
 		CheckPanic(err)
 		result := map[string]interface{}{}
 		json.Unmarshal(body, &result)
-		fmt.Print(result["Information"])
+		fmt.Println(result["Information"])
 		/*
 			body, err := ioutil.ReadAll(res.Body)
 			CheckPanic(err)
