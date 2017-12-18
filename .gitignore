@@ -1,3 +1,5 @@
+service/log
+cli/main
+
 agenda-cs.db
 cookie.json
-service/log

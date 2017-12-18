@@ -46,6 +46,8 @@ func checkUserRegistered(p []string) error {
 
 //只是判断两个时间段是否overlap
 func checkIfMeetingTimeOverlap(meetingStartTime, meetingEndTime, startTime, endTime time.Time) bool {
+	fmt.Println("checkIfMeetingTimeOverlap")
+	fmt.Println(meetingStartTime, meetingEndTime, startTime, endTime)
 	if (meetingStartTime.Before(startTime) || meetingStartTime.Equal(startTime)) &&
 		meetingEndTime.After(startTime) && (meetingEndTime.Before(endTime) || meetingEndTime.Equal(endTime)) {
 		return true
@@ -67,6 +69,7 @@ func checkIfMeetingTimeOverlap(meetingStartTime, meetingEndTime, startTime, endT
 
 //CreateMeeting 创建会议
 func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
+	fmt.Println("CreateMeeting")
 	meeting := new(Meeting)
 	has, err := MeetingDB.Table("meetinginformation").Id(m.Title).Get(meeting)
 	checkErr(err)
@@ -81,7 +84,20 @@ func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 	if err != nil {
 		return err
 	}
-	//判断时间重叠
+	//判断参加会议的用户时间是否重叠
+	//作为会议参与者相关的会议信息
+	for i := 0; i < len(participators); i++ {
+		sql := "select * from meetinginformation where participators like '%" + participators[i] + "%'"
+		result, err := GetMeetingInTimeInterval(1, participators[i], sql, m.StartTime, m.EndTime)
+		if result != "" {
+			return errors.New("user " + participators[i] + " time conflict")
+		}
+		if err != nil {
+			return err
+		}
+	}
+
+	//
 	_, err = MeetingDB.Table("meetinginformation").Insert(m)
 	checkErr(err)
 	if err == nil {
@@ -122,9 +138,18 @@ func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []strin
 	if err != nil {
 		return err
 	}
-	//check user 参加会议判断时间重叠
-	/*
-	 */
+	//判断参加会议的用户时间是否重叠
+	//作为会议参与者相关的会议信息
+	for i := 0; i < len(p); i++ {
+		sql := "select * from meetinginformation where participators like '%" + p[i] + "%'"
+		result, err := GetMeetingInTimeInterval(1, p[i], sql, meeting.StartTime, meeting.EndTime)
+		if result != "" {
+			return errors.New("user " + p[i] + " time conflict")
+		}
+		if err != nil {
+			return err
+		}
+	}
 
 	var add string
 	for i := 0; i < len(p); i++ {
@@ -170,6 +195,8 @@ func CheckUserInMeeting(queryType int, host string, participators string, user s
 	return usercheck
 }
 
+//GetMeetingInTimeInterval 判断用户加入的会议是否与此时间段冲突
+//返回值第一个是""的话，表示没有会议时间重叠
 func GetMeetingInTimeInterval(queryType int, user string, sql string, starttime time.Time, endTime time.Time) (string, error) {
 	var userInMeeting int
 	results, err := MeetingDB.Query(sql)
@@ -230,7 +257,7 @@ func (*MeetingInfoAtomicService) QueryMeetings(user string, starttime time.Time,
 	}
 	//用户什么会议都没参加/主持
 	if meetingInfo == "" {
-		return "", nil
+		return "", errors.New("user" + user + "participate no meetings")
 	}
 	meetingInfo = meetingInfoTitle + meetingInfo
 	fmt.Println("meetingInfo:")

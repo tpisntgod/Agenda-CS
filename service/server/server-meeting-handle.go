@@ -14,7 +14,6 @@ import (
 )
 
 type resjson struct {
-	Meetings    []meeting.Meeting
 	Information string
 }
 
@@ -74,8 +73,10 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 		if err := json.Unmarshal(body, &meetingj); err == nil {
 			starttime, _ := time.Parse("2006-01-02 15:04:05", meetingj.StartTime)
 			endtime, _ := time.Parse("2006-01-02 15:04:05", meetingj.EndTime)
+			fmt.Println(starttime, endtime)
 			meeting := meeting.Meeting{Title: meetingj.Title, Host: getCurrentUserNameMeeting(r),
 				Participator: getParticipatorsName(meetingj.Participator), StartTime: starttime, EndTime: endtime}
+			fmt.Println(meeting)
 			err := meetingService.CreateMeeting(meeting)
 			var info string
 			if err != nil {
@@ -108,6 +109,8 @@ func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 				info = "add participators succeed"
 			}
 			formatter.JSON(w, http.StatusOK, getResponseJson(info))
+		} else {
+			formatter.JSON(w, http.StatusOK, getResponseJson(err.Error()))
 		}
 	}
 }
@@ -128,7 +131,6 @@ func queryMeetingsHandler(formatter *render.Render) http.HandlerFunc {
 		starttime, _ := time.Parse("2006-01-02 15:04:05", stime)
 		endtime, _ := time.Parse("2006-01-02 15:04:05", etime)
 		fmt.Println(stime, etime)
-
 		queryMeetingResult, err := meetingService.QueryMeetings(getCurrentUserNameMeeting(r), starttime, endtime)
 		var info string
 		if err != nil {
