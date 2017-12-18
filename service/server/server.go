@@ -54,7 +54,7 @@ func initMeetingRoute(mx *mux.Router, formatter *render.Render) {
 	//删除会议参与者
 	mx.HandleFunc("/v1/meeting/{title}/deleting-participators", deleteParticipatorsHandler(formatter)).Methods("PATCH")
 	//查询会议
-	mx.HandleFunc("/v1/users/query-meeting{?starttime,endtime}", queryMeetingsHandler(formatter)).Methods("GET")
+	mx.HandleFunc("/v1/users/query-meeting", queryMeetingsHandler(formatter)).Methods("GET")
 	//取消会议
 	mx.HandleFunc("/v1/users/cancel-a-meeting/{title}", cancelMeetingHandler(formatter)).Methods("DELETE")
 	//退出会议
