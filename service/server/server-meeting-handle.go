@@ -95,15 +95,6 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc {
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-<<<<<<< HEAD
-=======
-		/*
-			if len(r.Form["title"]) == 0 {
-				fmt.Println("parse error")
-			} else {
-				fmt.Println("title:", r.Form["title"][0])
-			}*/
->>>>>>> ccf4b8ea97c1f569b12ae370caa8b1a3855d292a
 		url := mux.Vars(r)
 		title := url["title"]
 		body, _ := ioutil.ReadAll(r.Body)
@@ -132,13 +123,20 @@ func queryMeetingsHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("queryMeetingsHandler")
 		r.ParseForm()
-		fmt.Println(r.Form)
 		stime := r.Form["starttime"][0]
-		//etime := r.Form["endtime"][0]
+		etime := r.Form["endtime"][0]
 		starttime, _ := time.Parse("2006-01-02 15:04:05", stime)
-		//endtime, _ := time.Parse("2006-01-02 15:04:05", etime)
-		fmt.Println(stime)
-		fmt.Println(starttime)
+		endtime, _ := time.Parse("2006-01-02 15:04:05", etime)
+		fmt.Println(stime, etime)
+
+		queryMeetingResult, err := meetingService.QueryMeetings(getCurrentUserNameMeeting(r), starttime, endtime)
+		var info string
+		if err != nil {
+			info = err.Error()
+		} else {
+			info = queryMeetingResult
+		}
+		formatter.JSON(w, http.StatusOK, getResponseJson(info))
 	}
 }
 
