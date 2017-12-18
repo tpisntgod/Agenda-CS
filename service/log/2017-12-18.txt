@@ -5,3 +5,5 @@ To:{Name:hza  Email:123@qq.com  Phone:12345678910}
 [INFO]10:57:06 User:hza  Command:ListUsers
 [INFO]10:57:45 User:hza  Command:ListUsers
 [INFO]10:57:50 User:djg  Command:LogoutUser
+[INFO]13:48:31 User:hza  Command:LoginUser
+[INFO]13:49:00 User:djg  Command:ListUsers
