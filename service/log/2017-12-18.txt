@@ -14,3 +14,24 @@ To:{Name:hza  Email:123@qq.com  Phone:12345678910}
 [INFO]16:31:11 User:hza  Command:LoginUser
 [INFO]16:31:21 User:hza  Command:ListUsers
 [INFO]16:31:47 ERROR:Please logout at first
+[INFO]16:52:21 ERROR:The user has registered
+[INFO]16:52:40 User:ykj  Command:ListUsers
+[INFO]16:53:44 User:ykj  Command:DeleteUser
+[INFO]17:06:01 ERROR:No login user
+[INFO]17:08:10 User:aa  Command:LogoutUser
+[INFO]17:08:54 User:hpz  Command:LoginUser
+[INFO]17:10:03 Command:RegisterUser
+To:{Name:kyj  Email:1  Phone:1}
+[INFO]17:10:07 ERROR:The user has registered
+[INFO]17:12:42 User:hpz  Command:LogoutUser
+[INFO]17:12:48 User:hza  Command:LoginUser
+[INFO]17:15:52 User:hza  Command:ListUsers
+[INFO]17:16:59 User:hza  Command:DeleteUser
+[INFO]17:17:11 Command:RegisterUser
+To:{Name:hza  Email:1  Phone:1}
+[INFO]17:17:20 User:hza  Command:LoginUser
+[INFO]17:17:23 User:hza  Command:DeleteUser
+[INFO]17:17:34 Command:RegisterUser
+To:{Name:hza  Email:1  Phone:1}
+[INFO]17:17:37 User:hza  Command:LoginUser
+[INFO]17:17:43 User:hza  Command:LogoutUser
