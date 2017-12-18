@@ -5,7 +5,7 @@ type Item struct {
 	// 用户名字，是唯一主键
 	Name string `xorm:"pk" json:",omitempty"`
 	// hash过的密码
-	HashPassword string `json:",-"`
+	HashPassword string `json:"-"`
 	// 注册用的邮箱
 	Email string `json:",omitempty"`
 	// 注册用的电话号码

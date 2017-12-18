@@ -1,0 +1,7 @@
+[INFO]10:54:10 Command:RegisterUser
+To:{Name:hza  Email:123@qq.com  Phone:12345678910}
+[INFO]10:55:20 User:hza  Command:LoginUser
+[INFO]10:56:13 User:hza  Command:ListUsers
+[INFO]10:57:06 User:hza  Command:ListUsers
+[INFO]10:57:45 User:hza  Command:ListUsers
+[INFO]10:57:50 User:djg  Command:LogoutUser
