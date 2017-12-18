@@ -7,3 +7,10 @@ To:{Name:hza  Email:123@qq.com  Phone:12345678910}
 [INFO]10:57:50 User:djg  Command:LogoutUser
 [INFO]13:48:31 User:hza  Command:LoginUser
 [INFO]13:49:00 User:djg  Command:ListUsers
+[INFO]16:11:38 ERROR:The user has registered
+[INFO]16:14:09 ERROR:The user has registered
+[INFO]16:21:00 ERROR:The user has registered
+[INFO]16:30:49 ERROR:The user has registered
+[INFO]16:31:11 User:hza  Command:LoginUser
+[INFO]16:31:21 User:hza  Command:ListUsers
+[INFO]16:31:47 ERROR:Please logout at first

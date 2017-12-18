@@ -59,6 +59,13 @@ func praseCookie(r *http.Request) string {
 	return ""
 }
 
+// 返回错误表单
+func errResponse(w http.ResponseWriter, formatter *render.Render) {
+	if err := recover(); err != nil {
+		formatter.JSON(w, 500, stdResj(err))
+	}
+}
+
 // test
 func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +82,8 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer errResponse(w, formatter)
+
 		js := praseJSON(r)
 		user.RegisterUser(
 			js.Get("Name").MustString(),
@@ -82,17 +91,15 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 			js.Get("Email").MustString(),
 			js.Get("Phone").MustString())
 
-		if err := recover(); err == nil {
-			formatter.JSON(w, http.StatusOK, stdResj(err))
-		} else {
-			formatter.JSON(w, 500, stdResj(err))
-		}
+		formatter.JSON(w, http.StatusOK, stdResj(nil))
 	}
 }
 
 // 登录用户
 func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer errResponse(w, formatter)
+
 		// 使用user函数
 		js := praseJSON(r)
 		loginname := praseCookie(r)
@@ -101,73 +108,61 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 			js.Get("Password").MustString(),
 			loginname)
 
-		// 返回报文
-		if err := recover(); err == nil {
-			// 如果成功登录，设置cookie
-			cookie := http.Cookie{
-				Name:   "username",
-				Value:  pitem.Name,
-				Path:   "/",
-				MaxAge: 1200}
-			http.SetCookie(w, &cookie)
+		// 如果成功登录，设置cookie
+		cookie := http.Cookie{
+			Name:   "username",
+			Value:  pitem.Name,
+			Path:   "/",
+			MaxAge: 1200}
+		http.SetCookie(w, &cookie)
 
-			resjson := stdResj(err)
-			resjson.Item = *pitem
-			formatter.JSON(w, http.StatusOK, resjson)
-		} else {
-			formatter.JSON(w, 500, stdResj(err))
-		}
+		resjson := stdResj(nil)
+		resjson.Item = *pitem
+		formatter.JSON(w, http.StatusOK, resjson)
 	}
 }
 
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer errResponse(w, formatter)
+
 		loginname := praseCookie(r)
 		user.LogoutUser(loginname)
 
-		// 返回报文
-		if err := recover(); err == nil {
-			formatter.JSON(w, http.StatusOK, stdResj(err))
-		} else {
-			formatter.JSON(w, 500, stdResj(err))
-		}
+		formatter.JSON(w, http.StatusOK, stdResj(nil))
 	}
 }
 
 // 显示所有用户
 func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer errResponse(w, formatter)
+
 		loginname := praseCookie(r)
 		items := user.ListUsers(loginname)
 
-		if err := recover(); err == nil {
-			resjson := stdResj(err)
-			resjson.Users = items
-			formatter.JSON(w, http.StatusOK, resjson)
-		} else {
-			formatter.JSON(w, 500, stdResj(err))
-		}
+		resjson := stdResj(nil)
+		resjson.Users = items
+		formatter.JSON(w, http.StatusOK, resjson)
 	}
 }
 
 // 删除已登录用户
 func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		defer errResponse(w, formatter)
+
 		loginname := praseCookie(r)
 		user.DeleteUser(loginname)
 
-		if err := recover(); err == nil {
-			// 如果成功删除，设置cookie
-			cookie := http.Cookie{
-				Name:   "username",
-				Path:   "/",
-				MaxAge: -1}
-			http.SetCookie(w, &cookie)
-			formatter.JSON(w, http.StatusOK, stdResj(err))
-		} else {
-			formatter.JSON(w, 500, stdResj(err))
-		}
+		// 如果成功删除，设置cookie
+		cookie := http.Cookie{
+			Name:   "username",
+			Path:   "/",
+			MaxAge: -1}
+		http.SetCookie(w, &cookie)
+		formatter.JSON(w, http.StatusOK, stdResj(nil))
 	}
 }
 
