@@ -83,7 +83,7 @@ var mcCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
-		fmt.Println("create meeting" + title + "successfully")
+		fmt.Println("create meeting " + title + " successfully")
 	},
 }
 
