@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
 	"github.com/bilibiliChangKai/Agenda-CS/service/orm"
 )
 
@@ -12,13 +13,13 @@ var service = ItemAtomicService{}
 
 func init() {
 	err := orm.Mydb.Sync2(new(Item))
-	orm.CheckErr(err)
+	checkErr(err)
 }
 
 // Save 保存
 func (*ItemAtomicService) Save(u *Item) error {
 	_, err := orm.Mydb.Table("item").Insert(u)
-	orm.CheckErr(err)
+	checkErr(err)
 	return err
 }
 
@@ -26,7 +27,7 @@ func (*ItemAtomicService) Save(u *Item) error {
 func (*ItemAtomicService) FindAll() []Item {
 	as := []Item{}
 	err := orm.Mydb.Table("item").Desc("Name").Find(&as)
-	orm.CheckErr(err)
+	checkErr(err)
 	return as
 }
 
@@ -34,7 +35,7 @@ func (*ItemAtomicService) FindAll() []Item {
 func (*ItemAtomicService) FindByName(name string) *Item {
 	a := &Item{}
 	_, err := orm.Mydb.Table("item").Id(name).Get(a)
-	orm.CheckErr(err)
+	checkErr(err)
 	return a
 }
 
@@ -42,9 +43,16 @@ func (*ItemAtomicService) FindByName(name string) *Item {
 func (*ItemAtomicService) DeleteByName(name string) {
 	// 软删除
 	_, err := orm.Mydb.Table("item").Id(name).Delete(&Item{})
-	orm.CheckErr(err)
+	checkErr(err)
 
 	// 真正删除
 	_, err = orm.Mydb.Table("item").Id(name).Unscoped().Delete(&Item{})
-	orm.CheckErr(err)
+	checkErr(err)
+}
+
+func checkErr(err error) {
+	if err != nil {
+		mylog.AddErr(err)
+		panic(err)
+	}
 }

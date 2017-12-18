@@ -25,11 +25,17 @@ type resj struct {
 }
 
 // error.toString
-func toString(err error) string {
+func toString(err interface{}) string {
 	if err == nil {
 		return ""
 	}
-	return err.Error()
+	return fmt.Sprint(err)
+}
+
+// 标准response JSON，只包含Success和Result
+func stdResj(err interface{}) resj {
+	return resj{
+		Information: toString(err)}
 }
 
 // 解析传过来的JSON和cookie
@@ -53,12 +59,6 @@ func praseCookie(r *http.Request) string {
 	return ""
 }
 
-// 标准response JSON，只包含Success和Result
-func stdResj(inf string) resj {
-	return resj{
-		Information: inf}
-}
-
 // test
 func test(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -76,13 +76,17 @@ func test(formatter *render.Render) http.HandlerFunc {
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		js := praseJSON(r)
-		err := user.RegisterUser(
+		user.RegisterUser(
 			js.Get("Name").MustString(),
 			js.Get("Password").MustString(),
 			js.Get("Email").MustString(),
 			js.Get("Phone").MustString())
-		res := toString(err)
-		formatter.JSON(w, http.StatusOK, stdResj(res))
+
+		if err := recover(); err == nil {
+			formatter.JSON(w, http.StatusOK, stdResj(err))
+		} else {
+			formatter.JSON(w, 500, stdResj(err))
+		}
 	}
 }
 
@@ -92,14 +96,13 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 		// 使用user函数
 		js := praseJSON(r)
 		loginname := praseCookie(r)
-		pitem, err := user.LoginUser(
+		pitem := user.LoginUser(
 			js.Get("Name").MustString(),
 			js.Get("Password").MustString(),
 			loginname)
-		res := toString(err)
 
 		// 返回报文
-		if err == nil {
+		if err := recover(); err == nil {
 			// 如果成功登录，设置cookie
 			cookie := http.Cookie{
 				Name:   "username",
@@ -108,11 +111,11 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 				MaxAge: 1200}
 			http.SetCookie(w, &cookie)
 
-			resjson := stdResj(res)
+			resjson := stdResj(err)
 			resjson.Item = *pitem
 			formatter.JSON(w, http.StatusOK, resjson)
 		} else {
-			formatter.JSON(w, http.StatusOK, stdResj(res))
+			formatter.JSON(w, 500, stdResj(err))
 		}
 	}
 }
@@ -121,9 +124,14 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		loginname := praseCookie(r)
-		err := user.LogoutUser(loginname)
-		res := toString(err)
-		formatter.JSON(w, http.StatusOK, stdResj(res))
+		user.LogoutUser(loginname)
+
+		// 返回报文
+		if err := recover(); err == nil {
+			formatter.JSON(w, http.StatusOK, stdResj(err))
+		} else {
+			formatter.JSON(w, 500, stdResj(err))
+		}
 	}
 }
 
@@ -131,15 +139,14 @@ func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		loginname := praseCookie(r)
-		fmt.Println(r.Cookies())
-		items, err := user.ListUsers(loginname)
-		res := toString(err)
-		if items == nil {
-			formatter.JSON(w, http.StatusOK, stdResj(res))
-		} else {
-			resjson := stdResj(res)
+		items := user.ListUsers(loginname)
+
+		if err := recover(); err == nil {
+			resjson := stdResj(err)
 			resjson.Users = items
 			formatter.JSON(w, http.StatusOK, resjson)
+		} else {
+			formatter.JSON(w, 500, stdResj(err))
 		}
 	}
 }
@@ -148,19 +155,19 @@ func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		loginname := praseCookie(r)
-		err := user.DeleteUser(loginname)
-		//succ := (bool)(err == nil)
-		res := toString(err)
+		user.DeleteUser(loginname)
 
-		if err == nil {
+		if err := recover(); err == nil {
 			// 如果成功删除，设置cookie
 			cookie := http.Cookie{
 				Name:   "username",
 				Path:   "/",
 				MaxAge: -1}
 			http.SetCookie(w, &cookie)
+			formatter.JSON(w, http.StatusOK, stdResj(err))
+		} else {
+			formatter.JSON(w, 500, stdResj(err))
 		}
-		formatter.JSON(w, http.StatusOK, stdResj(res))
 	}
 }
 

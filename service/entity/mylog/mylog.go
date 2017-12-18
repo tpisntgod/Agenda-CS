@@ -63,3 +63,11 @@ func AddLog(user string, command string, oldStr string, newStr string) {
 	l.Print(outStr)
 	file.Close()
 }
+
+// AddErr 添加错误
+func AddErr(err error) {
+	file := getFileHandle()
+	l := log.New(file, "[INFO]", log.Ltime)
+	l.Println(err)
+	file.Close()
+}
