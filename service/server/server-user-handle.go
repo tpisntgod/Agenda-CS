@@ -33,7 +33,7 @@ func toString(err error) string {
 }
 
 // 解析传过来的JSON和cookie
-func praseJSONandCookie(r *http.Request) (*simplejson.Json, string) {
+func praseJSON(r *http.Request) *simplejson.Json {
 	// 解析json
 	body, err := ioutil.ReadAll(r.Body)
 	orm.CheckErr(err)
@@ -41,13 +41,16 @@ func praseJSONandCookie(r *http.Request) (*simplejson.Json, string) {
 
 	temp, err := simplejson.NewJson(body)
 	orm.CheckErr(err)
+	return temp
+}
 
+func praseCookie(r *http.Request) string {
 	// 解析cookie
 	cookie, _ := r.Cookie("username")
 	if cookie != nil {
-		return temp, cookie.Value
+		return cookie.Value
 	}
-	return temp, ""
+	return ""
 }
 
 // 标准response JSON，只包含Success和Result
@@ -72,10 +75,7 @@ func test(formatter *render.Render) http.HandlerFunc {
 // 创建一个新的用户
 func createUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		js, _ := praseJSONandCookie(r)
-		//ttt, _ := js.MarshalJSON()
-		fmt.Println(js.Get("Name").MustString())
+		js := praseJSON(r)
 		err := user.RegisterUser(
 			js.Get("Name").MustString(),
 			js.Get("Password").MustString(),
@@ -90,17 +90,16 @@ func createUserHandle(formatter *render.Render) http.HandlerFunc {
 func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// 使用user函数
-		js, loginname := praseJSONandCookie(r)
+		js := praseJSON(r)
+		loginname := praseCookie(r)
 		pitem, err := user.LoginUser(
 			js.Get("Name").MustString(),
 			js.Get("Password").MustString(),
 			loginname)
-		succ := (bool)(err == nil)
 		res := toString(err)
 
 		// 返回报文
-		if succ {
-			fmt.Println("COOKIENAME:" + pitem.Name)
+		if err == nil {
 			// 如果成功登录，设置cookie
 			cookie := http.Cookie{
 				Name:   "username",
@@ -121,7 +120,7 @@ func loginUserHandle(formatter *render.Render) http.HandlerFunc {
 // 登出用户
 func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, loginname := praseJSONandCookie(r)
+		loginname := praseCookie(r)
 		err := user.LogoutUser(loginname)
 		res := toString(err)
 		formatter.JSON(w, http.StatusOK, stdResj(res))
@@ -131,7 +130,7 @@ func logoutUserHandle(formatter *render.Render) http.HandlerFunc {
 // 显示所有用户
 func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, loginname := praseJSONandCookie(r)
+		loginname := praseCookie(r)
 		fmt.Println(r.Cookies())
 		items, err := user.ListUsers(loginname)
 		res := toString(err)
@@ -148,7 +147,7 @@ func listUsersHandle(formatter *render.Render) http.HandlerFunc {
 // 删除已登录用户
 func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, loginname := praseJSONandCookie(r)
+		loginname := praseCookie(r)
 		err := user.DeleteUser(loginname)
 		//succ := (bool)(err == nil)
 		res := toString(err)
@@ -165,8 +164,8 @@ func deleteUserHandle(formatter *render.Render) http.HandlerFunc {
 	}
 }
 
-func undefinedHandler(formatter *render.Render) http.HandlerFunc {
-
-	return func(w http.ResponseWriter, req *http.Request) {
-	}
-}
+// func undefinedHandler(formatter *render.Render) http.HandlerFunc {
+//
+// 	return func(w http.ResponseWriter, req *http.Request) {
+// 	}
+// }
