@@ -1,4 +1,4 @@
-service/log/*
+service/log/*.txt
 cli/main
 service/agenda-cs.db
 cli/network/cookie/cookie.json
