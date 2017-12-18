@@ -14,3 +14,15 @@ To:{Name:hza  Email:123@qq.com  Phone:12345678910}
 [INFO]16:31:11 User:hza  Command:LoginUser
 [INFO]16:31:21 User:hza  Command:ListUsers
 [INFO]16:31:47 ERROR:Please logout at first
+[INFO]18:33:34 ERROR:The user's password is wrong
+[INFO]18:33:53 Command:RegisterUser
+To:{Name:kyj  Email:1  Phone:1}
+[INFO]18:34:02 User:kyj  Command:LoginUser
+[INFO]18:34:11 User:kyj  Command:ListUsers
+[INFO]18:34:29 User:kyj  Command:LogoutUser
+[INFO]18:34:35 Command:RegisterUser
+To:{Name:kyj2  Email:1  Phone:1}
+[INFO]18:34:48 User:kyj  Command:LoginUser
+[INFO]18:34:54 User:kyj  Command:ListUsers
+[INFO]18:43:25 User:kyj  Command:ListUsers
+[INFO]18:43:41 User:kyj  Command:DeleteUser

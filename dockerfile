@@ -1,23 +1,14 @@
 # 运行go
-FROM golang:lastest
+FROM golang:latest
 
 # 创建服务端运行环境
-WORKDIR /service
+WORKDIR $GOPATH/src/github.com/bilibiliChangKai/Agenda-CS/cli
 
 # 添加文件
-ADD ./service/main /service/main
-
-# 定义GOPATH变量
-#ENV GOPATH /service
-
-# 构造第一个容器
-# 1.设置go环境
-# 2.安装godep包
-RUN export GO15VENDOREXPERIMENT="1" \
- && go get github.com/tools/godep
+ADD . $GOPATH/src/github.com/bilibiliChangKai/Agenda-CS
 
 # 将8080端口暴露出来
 EXPOSE 8080
 
-# 容器运行
-CMD ["./main"]
+# 添加GOPATH环境后，容器运行
+CMD  ../service/main
