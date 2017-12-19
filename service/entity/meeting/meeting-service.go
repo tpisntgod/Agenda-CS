@@ -33,6 +33,7 @@ func checkUserRegistered(p []string) error {
 	fmt.Println("checkUserRegistered")
 	for i := 0; i < len(p); i++ {
 		user := new(user.Item)
+		fmt.Println(p[i])
 		has, err := MeetingDB.Table("item").Id(p[i]).Get(user)
 		if has == false {
 			return errors.New("user " + p[i] + " didn't register")
@@ -77,7 +78,8 @@ func (*MeetingInfoAtomicService) CreateMeeting(m Meeting) error {
 	if has {
 		return errors.New("this meeting title already exists,create meeting failed")
 	}
-	participators := strings.Split(m.Participator, ";")
+	participatorsWithBlank := strings.Split(m.Participator, ";")
+	participators := participatorsWithBlank[1 : len(participatorsWithBlank)-1]
 	fmt.Println(participators)
 	//判断用户注册
 	err = checkUserRegistered(participators)
@@ -123,12 +125,13 @@ func checkUserAlreadyJoin(alreadyjoin []string, p []string) error {
 func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []string) error {
 	//meeting := Meeting{Title: title}
 	meeting := new(Meeting)
-	has, err := MeetingDB.Id(title).Get(meeting)
+	has, err := MeetingDB.Table("meetinginformation").Id(title).Get(meeting)
 	checkErr(err)
 	if has == false {
 		return errors.New("this meeting doesn't exist,add participator failed")
 	}
-	alreadyJoin := strings.Split(meeting.Participator, ";")
+	alreadyJoinWithBlank := strings.Split(meeting.Participator, ";")
+	alreadyJoin := alreadyJoinWithBlank[1 : len(alreadyJoinWithBlank)-1]
 	err = checkUserRegistered(p)
 	if err != nil {
 		return err
@@ -152,20 +155,17 @@ func (*MeetingInfoAtomicService) AddMeetingParticipators(title string, p []strin
 
 	var add string
 	for i := 0; i < len(p); i++ {
-		add += ";" + p[i]
+		add += p[i] + ";"
+
 	}
 	meeting.Participator += add
 	fmt.Println("add participators")
 	fmt.Println(meeting)
 
-	_, err = MeetingDB.Id(title).Update(meeting)
+	_, err = MeetingDB.Table("meetinginformation").Id(title).Update(meeting)
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func (*MeetingInfoAtomicService) DeleteMeetingParticipators() error {
 	return nil
 }
 
@@ -182,15 +182,16 @@ func CheckUserInMeeting(queryType int, host string, participators string, user s
 	if strings.Contains(participators, ";"+user+";") {
 		usercheck++
 	}
-	if strings.Contains(participators, user+";") {
-		usercheck++
-	}
-	if strings.Contains(participators, ";"+user) {
-		usercheck++
-	}
-	if participators == user {
-		usercheck++
-	}
+	/*
+		if strings.Contains(participators, user+";") {
+			usercheck++
+		}
+		if strings.Contains(participators, ";"+user) {
+			usercheck++
+		}
+		if participators == user {
+			usercheck++
+		}*/
 	return usercheck
 }
 
@@ -200,7 +201,7 @@ var checkDup map[string]int
 //返回值第一个是""的话，表示没有会议时间重叠
 func GetMeetingInTimeInterval(queryType int, user string, sql string, starttime time.Time, endTime time.Time) (string, error) {
 	var userInMeeting int
-	results, err := MeetingDB.Query(sql)
+	results, err := MeetingDB.Table("meetinginformation").Query(sql)
 	if err != nil {
 		return "", err
 	}
@@ -259,7 +260,7 @@ func (*MeetingInfoAtomicService) QueryMeetings(user string, starttime time.Time,
 	}
 	//用户什么会议都没参加/主持
 	if meetingInfo == "" {
-		return "", errors.New("user" + user + "participate no meetings")
+		return "", errors.New("user " + user + " participate no meetings")
 	}
 	meetingInfo = meetingInfoTitle + meetingInfo
 	fmt.Println("meetingInfo:")
@@ -267,9 +268,25 @@ func (*MeetingInfoAtomicService) QueryMeetings(user string, starttime time.Time,
 	return meetingInfo, nil
 }
 
-/*
-func (*MeetingInfoAtomicService) CancelMeeting() error {
+func (*MeetingInfoAtomicService) CancelMeeting(title string) error {
+	meeting := new(Meeting)
+	has, err := MeetingDB.Table("meetinginformation").Id(title).Get(meeting)
+	checkErr(err)
+	if has == false {
+		return errors.New("this meeting doesn't exist,cancel meeting failed")
+	}
+	meetingDelete := new(Meeting)
+	_, err = MeetingDB.Table("meetinginformation").Id(title).Delete(meetingDelete)
+	fmt.Println(meetingDelete)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
+/*
+func (*MeetingInfoAtomicService) DeleteMeetingParticipators() error {
+	return nil
 }
 
 func (*MeetingInfoAtomicService) QuitMeeting() error {

@@ -17,12 +17,17 @@ To:{Name:hza  Email:123@qq.com  Phone:12345678910}
 [INFO]18:33:34 ERROR:The user's password is wrong
 [INFO]18:33:53 Command:RegisterUser
 To:{Name:kyj  Email:1  Phone:1}
-[INFO]18:34:02 User:kyj  Command:LoginUser
-[INFO]18:34:11 User:kyj  Command:ListUsers
-[INFO]18:34:29 User:kyj  Command:LogoutUser
-[INFO]18:34:35 Command:RegisterUser
-To:{Name:kyj2  Email:1  Phone:1}
-[INFO]18:34:48 User:kyj  Command:LoginUser
-[INFO]18:34:54 User:kyj  Command:ListUsers
-[INFO]18:43:25 User:kyj  Command:ListUsers
-[INFO]18:43:41 User:kyj  Command:DeleteUser
+[INFO]17:10:07 ERROR:The user has registered
+[INFO]17:12:42 User:hpz  Command:LogoutUser
+[INFO]17:12:48 User:hza  Command:LoginUser
+[INFO]17:15:52 User:hza  Command:ListUsers
+[INFO]17:16:59 User:hza  Command:DeleteUser
+[INFO]17:17:11 Command:RegisterUser
+To:{Name:hza  Email:1  Phone:1}
+[INFO]17:17:20 User:hza  Command:LoginUser
+[INFO]17:17:23 User:hza  Command:DeleteUser
+[INFO]17:17:34 Command:RegisterUser
+To:{Name:hza  Email:1  Phone:1}
+[INFO]17:17:37 User:hza  Command:LoginUser
+[INFO]17:17:43 User:hza  Command:LogoutUser
+[INFO]19:20:09 User:hpz  Command:LoginUser
