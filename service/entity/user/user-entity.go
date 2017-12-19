@@ -22,12 +22,3 @@ func newItem(name string, password string,
 	newUserItem.PhoneNumber = phoneNumber
 	return newUserItem
 }
-
-// // 用于密码hash的函数
-// func hashFunc(hashString string) string {
-// 	// 进行md5加密
-// 	h := md5.New()
-// 	h.Write([]byte(hashString))
-// 	cipherStr := h.Sum(nil)
-// 	return hex.EncodeToString(cipherStr)
-// }

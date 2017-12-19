@@ -2,7 +2,6 @@ package user
 
 import (
 	"errors"
-	"fmt"
 	"path/filepath"
 
 	"github.com/bilibiliChangKai/Agenda-CS/service/entity/mylog"
@@ -26,7 +25,6 @@ func IsLogin(name string) bool {
 func RegisterUser(name string, password string,
 	email string, phoneNumber string) {
 	if service.FindByName(name).Name != "" {
-		fmt.Println("enter?")
 		checkErr(errors.New("ERROR:The user has registered"))
 	}
 
@@ -66,7 +64,6 @@ func LogoutUser(loginname string) {
 	}
 
 	mylog.AddLog(loginname, "LogoutUser", "", "")
-	//fmt.Println("Logout successfully!")
 }
 
 // ListUsers : 返回所有用户信息

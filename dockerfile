@@ -1,5 +1,5 @@
 # 运行go
-FROM golang:latest
+FROM golang:1.8
 
 # 创建服务端运行环境
 WORKDIR $GOPATH/src/github.com/bilibiliChangKai/Agenda-CS/cli
