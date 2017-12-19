@@ -7,24 +7,21 @@
 - 侯培中 15331105
 - 柯永基 15331135
 
-## 项目完成情况
-实现了github上多人协作开发；使用 json 存储 User 和 Meeting 实体，当前用户信息存储在 curUser.txt 中，实现了数据持久化；使用travis进行项目持续集成；添加 log 服务，记录用户的操作过程，以及关键的输出。
-
 ## 项目分工
 
 - 胡子昂
     1. 整体项目框架的初构建
     2. entity/user包的实现
-    3. log日志的实现
+    3. dockerfile
 - 侯培中
     1. 整体项目框架的改进  
     2. entity/meeting包的实现  
     3. meeting的test实现  
     4. 使用travis进行项目持续集成
 - 柯永基
-  1. cobra项目的创建
-  2. 逻辑层的实现
-  3. 项目总管理
+    1. cobra项目创建
+    2. cli端代码实现
+    3. 项目Docker管理
 
 ## 项目功能
 
@@ -32,13 +29,16 @@
 2. 用户创建会议，取消会议，修改会议人员，显示所有要参加的会议
 3. 用户和会议储存
 
+
+## API设计
+    https://agendacs.docs.apiary.io
+
 ## 安装和运行
 
-使用go get 安装后，在$GOPATH中的bin文件夹直接运行Agenda。
+1.从Docker Hub上拉取镜像
 
 ```shell
-~$ go get github.com/tpisntgod/Agenda
-~$ $GOPATH/bin/Agenda
+~$ sudo docker pull yokyj/agenda-cs
 ```
 
 ## Usage
