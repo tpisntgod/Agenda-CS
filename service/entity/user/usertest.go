@@ -18,7 +18,7 @@ func hashFunc(hashString string) string {
 	return hex.EncodeToString(cipheStr)
 }
 
-func TestBuildEnv(t *testing.T) {
+func TestClearEnv(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
 			t.Error(err)
