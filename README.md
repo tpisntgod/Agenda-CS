@@ -31,21 +31,37 @@
 
 
 ## API设计
-    [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
+See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
 
 ## 安装和运行
 
 1.从Docker Hub上拉取镜像
 
-```shell
+```
 ~$ sudo docker pull yokyj/agenda-cs
+```
+2.运行服务端
+
+```
+~$ sudo docker run -p 8080:8080 --name agenda-service -d yokyj/agenda-cs
+```
+
+3.docker运行客户端
+
+```
+~$ sudo docker run -it --rm --name agenda-cli --net host yokyj/agenda-cs "sh"
+```
+4.shell安装客户端
+
+```
+~$ go get github.com/bilibiliChangKai/Agenda-CS/cli
 ```
 
 ## Usage
-- 使用$GOPATH/bin/Agenda -h调用总体帮助界面
+- 使用cli -h调用总体帮助界面
 
   ```shell
-  ~$ $GOPATH/bin/Agenda -h
+  ~$ cli -h
   Usage:
     agenda [command]
 
