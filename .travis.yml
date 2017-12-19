@@ -2,3 +2,8 @@ language: go
 
 go:
   - 1.8
+
+script:
+  - go build ./cli/main.go
+  - go build ./service/main.go
+  - go test ./service/gotest
