@@ -182,6 +182,7 @@ var mccCmd = &cobra.Command{
 		CheckPanic(err)
 		defer res.Body.Close()
 		DealWithResponse(res)
+		fmt.Println("cancel meeting " + title + " successfully")
 	},
 }
 

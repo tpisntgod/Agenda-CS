@@ -39,11 +39,11 @@ var meetingService = meeting.MeetingInfoService
 
 // 将参与者名字的类型[]string转成string方便数据库存储
 func getParticipatorsName(p []string) string {
-	s := ""
-	for i := 0; i < len(p)-1; i++ {
+	s := ";"
+	for i := 0; i < len(p); i++ {
 		s = s + p[i] + ";"
 	}
-	s = s + p[len(p)-1]
+	fmt.Println(s)
 	return s
 }
 
@@ -149,6 +149,21 @@ func queryMeetingsHandler(formatter *render.Render) http.HandlerFunc {
 //取消会议 /v1/users/cancel-a-meeting/{title}
 func cancelMeetingHandler(formatter *render.Render) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("cancelMeetingHandler")
+		r.ParseForm()
+		url := mux.Vars(r)
+		title := url["title"]
+		fmt.Println(title)
+		err := meetingService.CancelMeeting(title)
+		var info string
+		if err != nil {
+			info = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, getResponseJson(info))
+		} else {
+			info = "cancel meeting succeed"
+			formatter.JSON(w, http.StatusOK, getResponseJson(info))
+		}
+		fmt.Println(info)
 	}
 }
 
