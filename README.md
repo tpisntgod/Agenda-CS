@@ -18,9 +18,9 @@
     2. entity/meeting包的实现  
     3. meeting的test实现  
     4. 使用travis进行项目持续集成
-- 柯永基
-    1. cli 端代码实现 
-    2. 项目DockerHub管理
+- 柯永基  
+    1. cli 端代码实现  
+    2. 项目DockerHub管理  
     3. README编写  
 
 ## 项目功能
@@ -63,7 +63,7 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
   ```shell
   ~$ cli -h
   Usage:
-    agenda [command]
+    cli [command]
 
   Available Commands:
     help        Help about any command
@@ -83,27 +83,27 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
   Flags:
     -h, --help   help for agenda
 
-  Use "agenda [command] --help" for more information about a command.
+  Use "cli [command] --help" for more information about a command.
   ```
 
-- 对每个指令，使用$GOPATH/bin/Agenda XX -h查看帮助页面，如下。
+- 对每个指令，使用cli XX -h查看帮助页面，如下。
 
   其中包含：
 
-  ​	Example：具体实例（$GOPATH/bin/Agenda ap -ttitle -pPeter -pMarry，意为添加Peter和Marry到名字叫title的会议中）
+  ​	Example：具体实例（cli ap -ttitle -pPeter -pMarry，意为添加Peter和Marry到名字叫title的会议中）
 
   ​	Flags： 每个flag的使用方法和作用
 
   ```shell
-  ~$ $GOPATH/bin/Agenda ap -h
+  ~$ cli ap -h
   to add some participators to a meeting with
   	the title of the meeting and the name of the new participators.
   	 For example:
 
-  ./app ap -ttitle -pPeter -pMarry
+  cli ap -ttitle -pPeter -pMarry
 
   Usage:
-    Agenda-GO ap [flags]
+    cli ap [flags]
 
   Flags:
     -h, --help                help for ap
@@ -113,3 +113,93 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
   Global Flags:
         --config string   config file (default is $HOME/.Agenda-GO.yaml)
   ```
+  
+## 功能展示
+  
+  ### register
+```
+~$ cli register -ukyj -p123 -e123@163.com -n123
+register called
+a new account is registered named by kyj
+```
+
+  ### login
+```
+~$ cli login -ukyj -p123
+kyj is logined
+```
+
+  ### logout
+```
+~$ cli logout
+logout called
+logout successfully
+```
+
+  ### usrSch
+```
+~$ cli usrSch
+usrSch called
+[
+    {
+        "Email": "123@163.com",
+        "Name": "kyj",
+        "Phone": "123"
+    },
+    {
+        "Email": "123@163.com",
+        "Name": "jzy",
+        "Phone": "123"
+    },
+    {
+        "Email": "123@163.com",
+        "Name": "hza",
+        "Phone": "123"
+    },
+    {
+        "Email": "123@163.com",
+        "Name": "hpz",
+        "Phone": "123"
+    }
+]
+```
+  ### usrDel
+```
+~$ cli usrDel
+usrDel called
+user is canceled successfully.
+```
+
+  ### mc
+```
+ ~$ cli mc -ttest -phza -phpz -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"
+mc called
+create meeting test successfully
+```
+当标题含空格时
+```
+~$ cli mc -t"a long title" -phza -phpz -s"2017-10-28 07:30:00" -e"2017-10-28 08:30:00"
+```
+  ### ap
+```
+~$ cli ap -ttest -pjzy
+ap called
+meeting:test add participators successfully
+```
+
+  ### ms
+```
+~$ cli ms -s"2017-10-28 06:30:00" -e"2017-10-28 11:30:00" 
+ms called
+指定时间范围内找到的所有会议安排
+会议主题： 起始时间：      终止时间：      发起者：  参与者：      
+test    2017-10-28 09:30:00  2017-10-28 10:30:00  kyj    hza;hpz;jzy
+a long title    2017-10-28 07:30:00  2017-10-28 08:30:00  kyj    hza;hpz
+```
+
+  ### mcc
+```
+~$ cli mcc -ttest
+mcc called
+cancel meeting test successfully
+```
