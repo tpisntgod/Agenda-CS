@@ -19,19 +19,19 @@
     3. meeting的test实现  
     4. 使用travis进行项目持续集成
 - 柯永基
-    1. cobra项目创建
-    2. cli端代码实现
-    3. 项目Docker管理
+    1. cli 端代码实现 
+    2. 项目DockerHub管理
+    3. README编写  
 
 ## 项目功能
 
-1. 用户注册，登录登出，用户查找，用户删除
-2. 用户创建会议，取消会议，修改会议人员，显示所有要参加的会议
-3. 用户和会议储存
+    1. 用户注册，登录登出，用户查找，用户删除
+    2. 用户创建会议，取消会议，修改会议人员，显示所有要参加的会议
+    3. 用户和会议储存
 
 
 ## API设计
-    https://agendacs.docs.apiary.io
+    [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
 
 ## 安装和运行
 
