@@ -1,6 +1,6 @@
 # Agenda-CS
 
-[![Build Status](https://travis-ci.org/tpisntgod/Agenda.svg?branch=master)](https://travis-ci.org/tpisntgod/Agenda)
+[![Build Status](https://travis-ci.org/bilibiliChangKai/Agenda-CS.svg?branch=master)](https://travis-ci.org/bilibiliChangKai/Agenda-CS)
 
 ## Team member
 - 胡子昂 15331111
