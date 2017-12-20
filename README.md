@@ -12,7 +12,8 @@
 - 胡子昂
     1. 整体项目框架的初构建
     2. entity/user包的实现
-    3. dockerfile
+    3. user的test实现
+    4. dockerfile
 - 侯培中
     1. 整体项目框架的改进  
     2. entity/meeting包的实现  
@@ -113,9 +114,9 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
   Global Flags:
         --config string   config file (default is $HOME/.Agenda-GO.yaml)
   ```
-  
+
 ## 功能展示
-  
+
   ### register
 ```
 ~$ cli register -ukyj -p123 -e123@163.com -n123
@@ -189,7 +190,7 @@ meeting:test add participators successfully
 
   ### ms
 ```
-~$ cli ms -s"2017-10-28 06:30:00" -e"2017-10-28 11:30:00" 
+~$ cli ms -s"2017-10-28 06:30:00" -e"2017-10-28 11:30:00"
 ms called
 指定时间范围内找到的所有会议安排
 会议主题： 起始时间：      终止时间：      发起者：  参与者：      
