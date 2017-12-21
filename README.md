@@ -20,9 +20,9 @@
     3. meeting的test实现  
     4. 使用travis进行项目持续集成
 - 柯永基  
-    1. cli 端代码实现  
-    2. 项目DockerHub管理  
-    3. README编写  
+        1. cli 端代码实现  
+        2. 项目DockerHub管理  
+        3. README编写  
 
 ## 项目功能
 
@@ -38,24 +38,54 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
 
 1.从Docker Hub上拉取镜像
 
-```
+```bash
 ~$ sudo docker pull yokyj/agenda-cs
 ```
 2.运行服务端
 
-```
+```bash
 ~$ sudo docker run -p 8080:8080 --name agenda-service -d yokyj/agenda-cs
 ```
 
 3.docker运行客户端
 
-```
+```bash
 ~$ sudo docker run -it --rm --name agenda-cli --net host yokyj/agenda-cs "sh"
 ```
 4.shell安装客户端
 
-```
+```bash
 ~$ go get github.com/bilibiliChangKai/Agenda-CS/cli
+```
+
+## 简单的Docker运行样例
+```bash
+~$ sudo docker pull yokyj/agenda-cs
+Using default tag: latest
+latest: Pulling from yokyj/agenda-cs
+723254a2c089: Already exists 
+abe15a44e12f: Already exists 
+409a28e3cc3d: Already exists 
+503166935590: Already exists 
+abe52c89597f: Already exists 
+ce145c5cf4da: Already exists 
+96e333289084: Already exists 
+39cd5f38ffb8: Already exists 
+0432020dd002: Pull complete 
+864dbae03c06: Pull complete 
+Digest: sha256:1a82d4cc06eb18849e53da49ff71ecaf19264c6d4a5512580d453b60602aa683
+Status: Downloaded newer image for yokyj/agenda-cs:latest
+~$ sudo docker run -p 8080:8080 --name agenda-service -d yokyj/agenda-cs
+afa40742bf7a4a6cd5d962081a20c7086672199090a5090d39a1a954a813a615
+~$ sudo docker run -it --rm --name agenda-cli --net host yokyj/agenda-cs "sh"
+# ./main logout
+logout called
+logout successfully
+# ./main login -uhza -p123
+500 Internal Server Error
+ERROR:The user's password is wrong
+# exit
+~$
 ```
 
 ## Usage
@@ -118,27 +148,27 @@ See [https://agendacs.docs.apiary.io](https://agendacs.docs.apiary.io)
 ## 功能展示
 
   ### register
-```
+```shell
 ~$ cli register -ukyj -p123 -e123@163.com -n123
 register called
 a new account is registered named by kyj
 ```
 
   ### login
-```
+```shell
 ~$ cli login -ukyj -p123
 kyj is logined
 ```
 
   ### logout
-```
+```shell
 ~$ cli logout
 logout called
 logout successfully
 ```
 
   ### usrSch
-```
+```shell
 ~$ cli usrSch
 usrSch called
 [
@@ -165,31 +195,31 @@ usrSch called
 ]
 ```
   ### usrDel
-```
+```shell
 ~$ cli usrDel
 usrDel called
 user is canceled successfully.
 ```
 
   ### mc
-```
+```shell
  ~$ cli mc -ttest -phza -phpz -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"
 mc called
 create meeting test successfully
 ```
 当标题含空格时
-```
+```shell
 ~$ cli mc -t"a long title" -phza -phpz -s"2017-10-28 07:30:00" -e"2017-10-28 08:30:00"
 ```
   ### ap
-```
+```shell
 ~$ cli ap -ttest -pjzy
 ap called
 meeting:test add participators successfully
 ```
 
   ### ms
-```
+```shell
 ~$ cli ms -s"2017-10-28 06:30:00" -e"2017-10-28 11:30:00"
 ms called
 指定时间范围内找到的所有会议安排
@@ -199,7 +229,7 @@ a long title    2017-10-28 07:30:00  2017-10-28 08:30:00  kyj    hza;hpz
 ```
 
   ### mcc
-```
+```shell
 ~$ cli mcc -ttest
 mcc called
 cancel meeting test successfully
