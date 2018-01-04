@@ -1,0 +1,23 @@
+Create New Meeting [POST]
+
+curl -H "Content-Type: application/json" -X POST --data '{"Title":"14","Participator": ["kyj6","hkyj],"StartTime":"2017-10-29 08:30:00","EndTime":"2017-10-29 09:30:00"}' --cookie "username=hpz" localhost:8080/v1/meetings
+
+Add Meeting Participators [PATCH]
+
+curl -H "Content-Type: application/json" -X PATCH --data '{"Participator": ["ykj3"]}' --cookie "username=ykj" localhost:8080/v1/meeting/10/adding-participators
+
+Query Meetings [GET]
+
+curl localhost:8080/v1/users/query-meeting?starttime=2017-10-28%2009:30:00\&endtime=2017-10-28%2010:30:00
+
+curl --cookie "username="ykj "localhost:8080/v1/users/query-meeting?starttime=2017-10-28%2009:30:00&endtime=2017-10-28%2010:30:00"
+
+./main mc -tmeeting5 -phkyj -s"2017-10-28 11:30:00" -e"2017-10-28 12:30:00"
+
+./main ap -tmeeting1 -phza
+
+./main ms -s"2017-10-28 08:30:00" -e"2017-10-28 19:30:00"
+
+./main mc -tmeeting6 -phpz -s"2017-10-28 12:30:00" -e"2017-10-28 12:31:00"
+
+./main ms -s"2017-12-19 01:39:01" -e"2017-12-19 01:39:01"
